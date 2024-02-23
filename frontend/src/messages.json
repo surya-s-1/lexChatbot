@@ -1,0 +1,10 @@
+[
+    {
+        "message": "This is a customer",
+        "sender": "customer"
+    },
+    {
+        "message": "Lorem Ipsum is simply dummy.",
+        "sender": "chatbot"
+    }
+]
