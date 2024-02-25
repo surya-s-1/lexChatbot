@@ -1,23 +1,26 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import MessageWrapper from "./Message";
 
 export default function Conversation() {
   const params =  useParams()
+  const navigate = useNavigate()
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
   const [fulfilled, setFulfilled] = useState(false)
   const [fulfilledMsg,setFulfilledMsg] = useState("")
+  const [inProgressMsg, setInProgressMsg] = useState("The conversation is in progress")
 
   const fetchMessages = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:8000/conversations/${params.id}`);
       const conversation = await response.json()
-
-      conversation.messages.map(message => {
-        if(message.intentState==="Fulfilled") {
+      
+      conversation.messages.forEach(message => {
+        if(message.intentState==="Fulfilled" || message.intentState==="Failed") {
           setFulfilled(true)
           setFulfilledMsg("This conversation is closed")
+          setInProgressMsg("")
         }
       })
 
@@ -61,17 +64,30 @@ export default function Conversation() {
 
   return (
     <div className="container" style={{width: '40%'}}>
-      <div className="d-grid gap-0 p-0">
-        {messages?.map(message => (
-          <div className={"p-1 m-0"} key={message._id}>
-            <MessageWrapper content={message.content} sender={message.sender} timestamp={message.timestamp} />
+      <nav class="navbar-expand-sm navbar-light bg-primary row position-fixed top-0"
+       style={{zIndex: 1, width: '40%', height: '7%'}}>
+        <div class="collapse navbar-collapse">
+          <div class="navbar-nav">
+            <button class="nav-link px-2" style={{color: 'white'}} onClick={()=>{navigate('/')}}>
+              Back
+            </button>
           </div>
-        ))}
+        </div>
+      </nav>
+      <div className="row" style={{zIndex: -1, marginTop: '10%'}}>
+        <div className="d-grid gap-0 p-0">
+          {messages?.map(message => (
+            <div className={"p-1 m-0"} key={message._id}>
+              <MessageWrapper content={message.content} sender={message.sender} timestamp={message.timestamp} />
+            </div>
+          ))}
+        </div>
+        <div className="font-weight-light" style={{marginBottom: '25%'}}>
+            <p className="text-center" style={{fontSize: '12px', color: 'grey'}}>{inProgressMsg}</p>
+            <p style={{color: 'red'}}>{fulfilledMsg}</p>
+        </div>
       </div>
-      <div style={{marginBottom: '25%'}}>
-          <p className="font-weight-light" style={{color: 'red'}}>{fulfilledMsg}</p>
-      </div>
-      <div className="position-fixed bottom-0" style={{maxHeight: '20%', width: '40%'}}>
+      <div className="row position-fixed bottom-0 p-0 m-0" style={{maxHeight: '20%', width: '40%', zIndex: 0}}>
         <form className="row">
           <textarea 
             className="form-control col" 

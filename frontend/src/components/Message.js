@@ -14,7 +14,7 @@ export default function MessageWrapper({content, sender, timestamp}) {
     } else {
         return(
             <div className="alert alert-secondary p-2 m-0 float-start" style={{maxWidth: '75%'}}>
-                {content}
+            {content}
                 <div className="font-weight-light" style={{fontSize: '8px'}}>
                     {time}
                 </div>

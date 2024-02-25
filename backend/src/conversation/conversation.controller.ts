@@ -28,7 +28,6 @@ export class ConversationController {
         @Body('sender') sender: string
     ): Promise<Conversation> {
         const result = await this.conversationService.addMessage(conversationId, content, sender)
-        console.log(result)
         return result
     }
 }

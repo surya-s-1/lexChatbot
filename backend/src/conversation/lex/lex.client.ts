@@ -30,7 +30,6 @@ export async function Bot (userInput) {
 
     try {
         const response = await client.send(command)
-
         return response
     } catch (error) {
         const { requestId, cfId, extendedRequestId } = error.$metadata
