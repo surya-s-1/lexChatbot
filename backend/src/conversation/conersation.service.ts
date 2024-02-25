@@ -25,10 +25,11 @@ export class ConversationService {
 
         const botResponse = await Bot(content)
 
-        botResponse.messages.map(message => {
+        botResponse.messages?.map(message => {
             const timestampBot = new Date(Date.now())
-            const newMessageBot = { content: message['content'], sender: "chatbot", timestamp: timestampBot, intentState: botResponse['sessionState']['intent']['state']}
-            
+
+            const newMessageBot = { content: message['content'], sender: "chatbot", timestamp: timestampBot, intentState: String(botResponse.sessionState?.intent?.state)}
+
             conversation.messages.push(newMessageBot)
         })
 

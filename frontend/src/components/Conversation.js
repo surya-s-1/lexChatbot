@@ -83,8 +83,8 @@ export default function Conversation() {
           ))}
         </div>
         <div className="font-weight-light" style={{marginBottom: '25%'}}>
-            <p className="text-center" style={{fontSize: '12px', color: 'grey'}}>{inProgressMsg}</p>
             <p style={{color: 'red'}}>{fulfilledMsg}</p>
+            <p className="text-center" style={{fontSize: '12px', color: 'grey'}}>{inProgressMsg}</p>
         </div>
       </div>
       <div className="row position-fixed bottom-0 p-0 m-0" style={{maxHeight: '20%', width: '40%', zIndex: 0}}>
