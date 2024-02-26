@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { MdDelete } from "react-icons/md";
 
 export default function Home() {
     const [conversations, setConversations] = useState([])
@@ -61,13 +62,11 @@ export default function Home() {
             <h2>Conversations</h2>
             <ul className="list-group">
                 {conversations.map((conversation) => (
-                    <li className="row list-group-item list-group-item-action" key={conversation._id}>
-                        <div className="col">
-                            <Link className="list-group-item-action" to={`/conversations/${conversation._id}`}>Conversation {conversation._id}</Link>
-                        </div>
-                        <div className="col">
-                            <button onClick={()=>{deleteConversation(conversation._id)}}>Delete</button>
-                        </div>
+                    <li className="list-group-item list-group-item-action" key={conversation._id}>
+                        <Link className="list-group-item-action" to={`/conversations/${conversation._id}`}>Conversation {conversation._id}</Link>
+                        <button className="btn btn-danger p-1 m-0 float-end" onClick={()=>{deleteConversation(conversation._id)}}>
+                            <MdDelete />
+                        </button>
                     </li>
                 ))}
             </ul>

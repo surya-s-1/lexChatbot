@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
 import MessageWrapper from "./Message";
 
 export default function Conversation() {
@@ -72,11 +73,11 @@ export default function Conversation() {
   return (
     <div className="container" style={{width: '40%'}}>
       <nav class="navbar-expand-sm navbar-light bg-primary row position-fixed top-0"
-       style={{zIndex: 1, width: '40%', height: '7%'}}>
+       style={{zIndex: 1, width: '40%', height: '7%', boxShadow: "0 1px 1px grey"}}>
         <div class="collapse navbar-collapse">
           <div class="navbar-nav">
             <button class="nav-link px-2" style={{color: 'white'}} onClick={()=>{navigate('/')}}>
-              Back
+              <IoIosArrowBack />
             </button>
           </div>
         </div>
