@@ -23,7 +23,7 @@ export default function Home() {
         };
 
         fetchConversations();
-    }, [])
+    }, [conversations])
 
     const createConversation = async () => {
         try {
@@ -46,13 +46,28 @@ export default function Home() {
         }
     }
 
+    const deleteConversation = async (conversationId) => {
+        try {
+            await fetch(`http://localhost:8000/conversations/${conversationId}`, {
+                method: 'DELETE'
+            })
+        } catch (err) {
+            console.log('Error deleting converstaion:', err)
+        }
+    }
+
     return (
         <div className="container" style={{ width: '40%' }}>
             <h2>Conversations</h2>
             <ul className="list-group">
                 {conversations.map((conversation) => (
-                    <li className="list-group-item list-group-item-action" key={conversation._id}>
-                        <Link className="list-group-item-action" to={`/conversations/${conversation._id}`}>Conversation {conversation._id}</Link>
+                    <li className="row list-group-item list-group-item-action" key={conversation._id}>
+                        <div className="col">
+                            <Link className="list-group-item-action" to={`/conversations/${conversation._id}`}>Conversation {conversation._id}</Link>
+                        </div>
+                        <div className="col">
+                            <button onClick={()=>{deleteConversation(conversation._id)}}>Delete</button>
+                        </div>
                     </li>
                 ))}
             </ul>
