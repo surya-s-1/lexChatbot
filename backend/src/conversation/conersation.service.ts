@@ -13,7 +13,13 @@ export class ConversationService {
     ) {}
 
     async createConversation(): Promise<Conversation> {
-        const newConversation = new this.conversationModel({messages: []})
+        function sessionId() {
+            return Date.now().toString()
+        }
+        
+        const sessionNow = sessionId()
+
+        const newConversation = new this.conversationModel({sessionId: sessionNow, messages: []})
         return newConversation.save()
     }
 
@@ -24,7 +30,7 @@ export class ConversationService {
 
         conversation.messages.push(newMessage)
 
-        const botResponse = await Bot(content)
+        const botResponse = await Bot(conversation.sessionId, content)
 
         botResponse.messages?.map(message => {
             const timestampBot = new Date(Date.now())

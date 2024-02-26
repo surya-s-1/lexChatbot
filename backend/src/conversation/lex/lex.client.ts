@@ -10,19 +10,13 @@ const config = {
 
 const client = new LexRuntimeV2Client(config)
 
-function sessionId() {
-    return Date.now().toString()
-}
-
-const sessionNow = sessionId()
-
-export async function Bot (userInput) {
+export async function Bot (sessionId, userInput) {
 
     const input = {
         botId: "LCIYG1FODP",
         botAliasId: "LPMCX0SOWQ",
         localeId: "en_IN",
-        sessionId: sessionNow,
+        sessionId: sessionId,
         text: userInput
     }
 
