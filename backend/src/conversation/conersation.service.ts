@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Conversation, ConversationDocument } from "./conversation.schema";
 import { Bot } from "./lex/lex.client";
+import { filter } from "rxjs";
 
 @Injectable()
 export class ConversationService {
@@ -44,5 +45,14 @@ export class ConversationService {
     async getAllConversations() {
         const conversations = await this.conversationModel.find().exec()
         return conversations
+    }
+
+    async deleteConversation(conversationId: string) {
+        const result = await this.conversationModel.deleteOne({_id: new Object(conversationId)})
+        if (result.deletedCount === 1) {
+            return {success: true}
+        } else {
+            return {success: false}
+        }
     }
 }

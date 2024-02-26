@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
 import { ConversationService } from './conersation.service';
 import { Conversation } from './conversation.schema';
 
@@ -28,6 +28,12 @@ export class ConversationController {
         @Body('sender') sender: string
     ): Promise<Conversation> {
         const result = await this.conversationService.addMessage(conversationId, content, sender)
+        return result
+    }
+
+    @Delete(':id')
+    async deleteConversation(@Param('id') conversationId: string) {
+        const result = await this.conversationService.deleteConversation(conversationId)
         return result
     }
 }

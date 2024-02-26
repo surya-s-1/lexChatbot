@@ -32,8 +32,15 @@ export default function Conversation() {
 
 
   useEffect(()=> {
+    if (fulfilled) {
+      setInput("")
+    } else {
+      setInput("Hi")
+    }
+
     fetchMessages()
-  },[params.id, fetchMessages])
+
+  },[fulfilled, params.id, fetchMessages])
 
   const handleSend = async (e) => {
     e.preventDefault()
