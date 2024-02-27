@@ -10,7 +10,7 @@ export default function Conversation() {
   const [input, setInput] = useState("")
   const [fulfilled, setFulfilled] = useState(false)
   const [fulfilledMsg,setFulfilledMsg] = useState("")
-  const [inProgressMsg, setInProgressMsg] = useState("The conversation is in progress")
+  const [inProgressMsg, setInProgressMsg] = useState("")
 
   const fetchMessages = useCallback(async () => {
     try {

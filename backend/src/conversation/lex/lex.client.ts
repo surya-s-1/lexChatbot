@@ -1,4 +1,4 @@
-const { LexRuntimeV2Client, GetSessionCommand, PutSessionCommand, StartConversationCommand, RecognizeTextCommand } = require("@aws-sdk/client-lex-runtime-v2")
+const { LexRuntimeV2Client, RecognizeTextCommand, RecognizeUtteranceCommand } = require("@aws-sdk/client-lex-runtime-v2")
 
 const config = {
     region: "us-east-1",
@@ -10,12 +10,12 @@ const config = {
 
 const client = new LexRuntimeV2Client(config)
 
-export async function Bot (sessionId, userInput) {
+export async function Bot(sessionId, userInput) {
 
     const input = {
-        botId: "LCIYG1FODP",
-        botAliasId: "LPMCX0SOWQ",
-        localeId: "en_IN",
+        botId: "Z9HEIJJPDN",
+        botAliasId: "VQLV9AOWIR",
+        localeId: "en_US",
         sessionId: sessionId,
         text: userInput
     }

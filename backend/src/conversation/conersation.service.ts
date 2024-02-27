@@ -3,7 +3,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Conversation, ConversationDocument } from "./conversation.schema";
 import { Bot } from "./lex/lex.client";
-import { filter } from "rxjs";
 
 @Injectable()
 export class ConversationService {
