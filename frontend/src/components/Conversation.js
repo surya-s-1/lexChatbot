@@ -66,15 +66,15 @@ export default function Conversation() {
           </div>
         </div>
       </nav>
-      <div className="row" style={{zIndex: -1, marginTop: '10%'}}>
+      <div className="row" style={{zIndex: -1, marginTop: '10%', marginBottom: '25%',overflow: 'hidden'}}>
         <div className="d-grid gap-0 p-0">
-          {messages?.map(message => (
-            <div className={"p-1 m-0"} key={message._id}>
-              <MessageWrapper content={message.content} sender={message.sender} timestamp={message.timestamp} />
-            </div>
-          ))}
+            {messages?.map(message => (
+              <div className={"p-1 m-0"} key={message._id}>
+                <MessageWrapper content={message.content} sender={message.sender} timestamp={message.timestamp} />
+              </div>
+            ))}
         </div>
-        <div className="font-weight-light" style={{marginBottom: '25%'}}>
+        <div className="font-weight-light">
             <p style={{color: 'red'}}>{fulfilled==='Close'?"This conversation is closed":null}</p>
             <p className="text-center" style={{fontSize: '12px', color: 'grey'}}>{fulfilled!=='Close'?"This conversation is in progress":null}</p>
         </div>
