@@ -63,8 +63,8 @@ export default function Home() {
             <ul className="list-group">
                 {conversations.map((conversation) => (
                     <li className="list-group-item list-group-item-action" key={conversation._id}>
-                        <Link className="list-group-item-action" to={`/conversations/${conversation._id}`}>Conversation {conversation._id}</Link>
-                        <button className="btn btn-danger p-1 m-0 float-end" onClick={()=>{deleteConversation(conversation._id)}}>
+                        <Link className="list-group-item-action" to={`/conversations/${conversation._id}`} style={{textDecoration: 'none'}}>Conversation {conversation._id}</Link>
+                        <button className="btn btn-danger px-1 py-0 m-0 float-end" onClick={()=>{deleteConversation(conversation._id)}}>
                             <MdDelete />
                         </button>
                     </li>

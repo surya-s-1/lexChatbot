@@ -1,4 +1,4 @@
-const { LexRuntimeV2Client, RecognizeTextCommand, RecognizeUtteranceCommand } = require("@aws-sdk/client-lex-runtime-v2")
+const { LexRuntimeV2Client, RecognizeTextCommand } = require("@aws-sdk/client-lex-runtime-v2")
 
 const config = {
     region: "us-east-1",
