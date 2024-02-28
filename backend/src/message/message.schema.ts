@@ -13,9 +13,6 @@ export class Message {
 
     @Prop()
     timestamp: Date;
-
-    @Prop()
-    intentState: string;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message)

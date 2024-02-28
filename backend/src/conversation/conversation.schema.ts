@@ -11,6 +11,9 @@ export class Conversation {
 
     @Prop()
     sessionId: string
+    
+    @Prop()
+    state: string;
 }
 
 export const ConversationSchema = SchemaFactory.createForClass(Conversation)

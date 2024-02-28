@@ -25,7 +25,7 @@ export class ConversationService {
     async addMessage(conversationId: string, content: string, sender: string): Promise<Conversation> {
         const conversation = await this.conversationModel.findById(new Object(conversationId))
         const timestamp = new Date(Date.now())
-        const newMessage = { content, sender, timestamp, intentState: 'query' }
+        const newMessage = { content, sender, timestamp }
 
         conversation.messages.push(newMessage)
 
@@ -34,11 +34,13 @@ export class ConversationService {
         botResponse.messages?.map(message => {
             const timestampBot = new Date(Date.now())
 
-            const newMessageBot = { content: message['content'], sender: "chatbot", timestamp: timestampBot, intentState: String(botResponse.sessionState?.intent?.state)}
+            const newMessageBot = { content: message['content'], sender: "chatbot", timestamp: timestampBot}
 
             conversation.messages.push(newMessageBot)
         })
 
+        conversation.state = botResponse.sessionState.dialogAction.type
+        
         return conversation.save()
     }
 

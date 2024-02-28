@@ -8,24 +8,15 @@ export default function Conversation() {
   const navigate = useNavigate()
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
-  const [fulfilled, setFulfilled] = useState(false)
-  const [fulfilledMsg,setFulfilledMsg] = useState("")
-  const [inProgressMsg, setInProgressMsg] = useState("")
+  const [fulfilled, setFulfilled] = useState("")
 
   const fetchMessages = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:8000/conversations/${params.id}`);
       const conversation = await response.json()
-      
-      conversation.messages.forEach(message => {
-        if(message.intentState==="Fulfilled" || message.intentState==="Failed") {
-          setFulfilled(true)
-          setFulfilledMsg("This conversation is closed")
-          setInProgressMsg("")
-        }
-      })
 
-      setMessages(conversation.messages);
+      setFulfilled(conversation.state)
+      setMessages(conversation.messages)
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
@@ -33,15 +24,8 @@ export default function Conversation() {
 
 
   useEffect(()=> {
-    if (fulfilled) {
-      setInput("")
-    } else {
-      setInput("Hi")
-    }
-
     fetchMessages()
-
-  },[fulfilled, params.id, fetchMessages])
+  },[params.id, fetchMessages])
 
   const handleSend = async (e) => {
     e.preventDefault()
@@ -91,8 +75,8 @@ export default function Conversation() {
           ))}
         </div>
         <div className="font-weight-light" style={{marginBottom: '25%'}}>
-            <p style={{color: 'red'}}>{fulfilledMsg}</p>
-            <p className="text-center" style={{fontSize: '12px', color: 'grey'}}>{inProgressMsg}</p>
+            <p style={{color: 'red'}}>{fulfilled==='Close'?"This conversation is closed":null}</p>
+            <p className="text-center" style={{fontSize: '12px', color: 'grey'}}>{fulfilled!=='Close'?"This conversation is in progress":null}</p>
         </div>
       </div>
       <div className="row position-fixed bottom-0 p-0 m-0" style={{maxHeight: '20%', width: '40%', zIndex: 0}}>
@@ -103,13 +87,13 @@ export default function Conversation() {
             value={input}
             onChange={e => setInput(e.target.value)}
             style={{ resize: 'none', height: 'auto', overflow: 'hidden' }} 
-            disabled={fulfilled}
+            disabled={fulfilled==='Close'?true:false}
           />
           <button 
             type="button" 
             className="btn btn-primary mt-2" 
             onClick={e => handleSend(e)}
-            disabled={fulfilled}
+            disabled={fulfilled==='Close'?true:false}
           >
             Send
           </button>
