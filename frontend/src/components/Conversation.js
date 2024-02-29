@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { IoIosArrowBack } from "react-icons/io"
 import MessageWrapper from "./Message"
@@ -9,6 +9,7 @@ export default function Conversation() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
   const [fulfilled, setFulfilled] = useState(false)
+  const scrollDown = useRef(null)
 
   const fetchMessages = useCallback(async () => {
     try {
@@ -22,6 +23,10 @@ export default function Conversation() {
       }
 
       setMessages(conversation.messages)
+
+      scrollDown.current.scrollIntoView(true,{
+        behavior: 'smooth'
+      })
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
@@ -85,7 +90,7 @@ export default function Conversation() {
 
   return (
     <div className="container" style={{width: '40%'}}>
-      <nav class="navbar-expand-sm navbar-light bg-primary row position-fixed top-0"
+      <nav class="row navbar-expand-sm navbar-light bg-primary position-fixed top-0"
        style={{zIndex: 1, width: '40%', height: '7%', boxShadow: "0 1px 1px grey"}}>
         <div class="collapse navbar-collapse">
           <div class="navbar-nav">
@@ -95,6 +100,7 @@ export default function Conversation() {
           </div>
         </div>
       </nav>
+      
       <div className="row" style={{zIndex:-1, marginTop:'10%', marginBottom:'25%',overflow:'hidden'}}>
         <div className="d-grid gap-0 p-0">
             {messages?.map(message => (
@@ -104,7 +110,7 @@ export default function Conversation() {
             ))}
         </div>
         <div className="font-weight-light">
-            <p style={{color: 'red'}}>
+            <p style={{color: 'red'}} ref={scrollDown}>
               {fulfilled?"This conversation is closed":null}
             </p>
             <p className="text-center" style={{fontSize: '12px', color: 'grey'}}>
@@ -112,6 +118,7 @@ export default function Conversation() {
             </p>
         </div>
       </div>
+
       <div className="row position-fixed bottom-0 p-0 m-0" style={{maxHeight: '20%', width: '40%', zIndex: 0}}>
         <form className="row">
           <textarea 
