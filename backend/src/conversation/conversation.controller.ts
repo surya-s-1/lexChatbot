@@ -31,6 +31,15 @@ export class ConversationController {
         return result
     }
 
+    @Post(':id/botmessages')
+    async getBotMessages(
+        @Param('id') conversationId: string,
+        @Body('content') content: string
+    ): Promise<Conversation> {
+        const result = await this.conversationService.getBotMessages(conversationId, content)
+        return result
+    }
+
     @Delete(':id')
     async deleteConversation(@Param('id') conversationId: string) {
         const result = await this.conversationService.deleteConversation(conversationId)

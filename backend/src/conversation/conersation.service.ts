@@ -28,6 +28,12 @@ export class ConversationService {
         const newMessage = { content, sender, timestamp }
 
         conversation.messages.push(newMessage)
+        
+        return conversation.save()
+    }
+
+    async getBotMessages(conversationId: string, content: string): Promise<Conversation> {
+        const conversation = await this.conversationModel.findById(new Object(conversationId))
 
         const botResponse = await Bot(conversation.sessionId, content)
 

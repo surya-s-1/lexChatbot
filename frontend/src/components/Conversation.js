@@ -32,11 +32,10 @@ export default function Conversation() {
     fetchMessages()
 
     setInput("Hi")
-  },[params.id, fetchMessages])
+  },[fetchMessages])
 
-  const handleSend = async (e) => {
+  const handleSendUserMessage = async (e) => {
     e.preventDefault()
-    
     if (input.trim() !== "") {
       const newMessage = {
         content: input,
@@ -56,7 +55,30 @@ export default function Conversation() {
       }
 
       fetchMessages()
+      setInput("")
+    }
+  }
 
+  const handleGetBotResponse = async (e) => {
+    e.preventDefault()
+    if (input.trim() !== "") {
+      const newMessage = {
+        content: input
+      }
+
+      const response = await fetch(`http://localhost:8000/conversations/${params.id}/botmessages`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newMessage),
+        })
+      
+      if (!response.ok) {
+        throw new Error(`Failed to send message: ${response.status}`);
+      }
+
+      fetchMessages()
       setInput("")
     }
   }
@@ -103,7 +125,10 @@ export default function Conversation() {
           <button 
             type="button" 
             className="btn btn-primary mt-2" 
-            onClick={e => handleSend(e)}
+            onClick={e => {
+              handleSendUserMessage(e)
+              handleGetBotResponse(e)
+            }}
             disabled={fulfilled}
           >
             Send
