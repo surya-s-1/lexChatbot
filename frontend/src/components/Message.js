@@ -2,7 +2,7 @@ import { TypeAnimation } from 'react-type-animation'
 
 export default function MessageWrapper({content, sender, timestamp}) {
     const datetime = new Date(timestamp)
-    const time = datetime.toLocaleTimeString()
+    const time = datetime.toLocaleTimeString(undefined, {hour: 'numeric', minute: '2-digit'})
 
     if (sender==='user') {
         return(
@@ -16,7 +16,7 @@ export default function MessageWrapper({content, sender, timestamp}) {
     } else {
         return(
             <div className="alert alert-secondary p-2 m-0 float-start" style={{maxWidth: '75%'}}>
-                <TypeAnimation sequence={[content]} speed={99} cursor={false} />
+                {content}
                 <div className="font-weight-light" style={{fontSize: '10px'}}>
                     {time}
                 </div>
@@ -27,8 +27,8 @@ export default function MessageWrapper({content, sender, timestamp}) {
 
 export function LoadingWrapper() {
     return(
-        <div className="alert alert-secondary p-2 m-0 float-start" style={{maxWidth: 'fit-content'}}>
-            <TypeAnimation sequence={['']} speed={20} cursor={true} />
+        <div className="p-2 m-0 float-start" style={{opacity: '50%'}}>
+            <TypeAnimation sequence={['Loading...',650,'']} speed={65} repeat={Infinity} cursor={true} />
         </div>
     )
 }

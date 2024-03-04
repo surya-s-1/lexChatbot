@@ -9,7 +9,7 @@ export default function Conversation() {
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
   const [input, setInput] = useState("")
-  const [fulfilled, setFulfilled] = useState(false)
+  const [closed, setClosed] = useState(false)
   const scrollDown = useRef(null)
 
   const fetchMessages = useCallback(async () => {
@@ -18,9 +18,9 @@ export default function Conversation() {
       const conversation = await response.json()
 
       if (conversation.state === "Close") {
-        setFulfilled(true)
+        setClosed(true)
       } else {
-        setFulfilled(false)
+        setClosed(false)
       }
 
       setMessages(conversation.messages)
@@ -96,7 +96,7 @@ export default function Conversation() {
       <nav class="row navbar-expand-sm navbar-light bg-primary position-fixed top-0"
        style={{zIndex: 1, width: '40%', height: '7%', boxShadow: "0 1px 1px grey"}}>
         <div class="collapse navbar-collapse">
-          <div class="navbar-nav">
+          <div class="navbar-nav d-flex">
             <button class="nav-link px-2" style={{color: 'white'}} onClick={()=>{navigate('/')}}>
               <IoIosArrowBack />
             </button>
@@ -115,10 +115,10 @@ export default function Conversation() {
         </div>
         <div className="font-weight-light">
             <p style={{color: 'red'}} ref={scrollDown}>
-              {fulfilled?"This conversation is closed":null}
+              {closed?"This conversation is closed":null}
             </p>
             <p className="text-center" style={{fontSize: '12px', color: 'grey'}}>
-              {fulfilled?null:"This conversation is in progress"}
+              {closed?null:"This conversation is in progress"}
             </p>
         </div>
       </div>
@@ -131,7 +131,7 @@ export default function Conversation() {
             value={input}
             onChange={e => setInput(e.target.value)}
             style={{ resize: 'none', height: 'auto', overflow: 'hidden' }} 
-            disabled={fulfilled}
+            disabled={closed}
           />
           <button 
             type="button" 
@@ -140,7 +140,7 @@ export default function Conversation() {
               handleSendUserMessage(e)
               handleGetBotResponse(e)
             }}
-            disabled={fulfilled}
+            disabled={closed}
           >
             Send
           </button>
