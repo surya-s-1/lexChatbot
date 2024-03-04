@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { IoIosArrowBack } from "react-icons/io"
-import MessageWrapper from "./Message"
+import MessageWrapper, {LoadingWrapper} from "./Message"
 
 export default function Conversation() {
   const params =  useParams()
   const navigate = useNavigate()
   const [messages, setMessages] = useState([])
+  const [loading, setLoading] = useState(false)
   const [input, setInput] = useState("")
   const [fulfilled, setFulfilled] = useState(false)
   const scrollDown = useRef(null)
@@ -61,6 +62,7 @@ export default function Conversation() {
 
       fetchMessages()
       setInput("")
+      setLoading(true)
     }
   }
 
@@ -85,6 +87,7 @@ export default function Conversation() {
 
       fetchMessages()
       setInput("")
+      setLoading(false)
     }
   }
 
@@ -108,6 +111,7 @@ export default function Conversation() {
                 <MessageWrapper content={message.content} sender={message.sender} timestamp={message.timestamp} />
               </div>
             ))}
+            {loading? (<LoadingWrapper />) : null}
         </div>
         <div className="font-weight-light">
             <p style={{color: 'red'}} ref={scrollDown}>
