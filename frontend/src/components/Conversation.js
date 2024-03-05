@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { IoIosArrowBack } from "react-icons/io"
+import { BsFillSendFill } from "react-icons/bs"
 import MessageWrapper, {LoadingWrapper} from "./Message"
 
 export default function Conversation() {
@@ -36,7 +37,6 @@ export default function Conversation() {
 
   useEffect(()=> {
     fetchMessages()
-
   },[fetchMessages])
 
   const handleSendUserMessage = async (e) => {
@@ -122,29 +122,26 @@ export default function Conversation() {
         </div>
       </div>
 
-      <div className="row position-fixed bottom-0 p-0 m-0" style={{maxHeight: '20%', width: '40%', zIndex: 0}}>
-        <form className="row">
-          <input 
-            className="form-control col" 
-            placeholder="Type here..." 
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            style={{ overflow: 'scroll' }} 
-            disabled={closed}
-          />
-          <button 
-            type="submit" 
-            className="btn btn-primary mt-2" 
-            onClick={e => {
-              handleSendUserMessage(e)
-              handleGetBotResponse(e)
-            }}
-            disabled={closed}
-          >
-            Send
-          </button>
-        </form>
-      </div>
+      <form className="d-flex flex-row position-fixed bottom-0 p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
+        <input 
+          className="form-control border-0" 
+          placeholder="Type here..." 
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          disabled={closed}
+        />
+        <button 
+          type="submit" 
+          className="btn btn-white" 
+          onClick={e => {
+            handleSendUserMessage(e)
+            handleGetBotResponse(e)
+          }}
+          disabled={closed}
+        >
+          <BsFillSendFill />
+        </button>
+      </form>
     </div>
   );
 }
