@@ -67,7 +67,7 @@ export default function Home() {
                     Start Conversation
                 </button>
             </nav>
-            <ul className="list-group">
+            <ul className="list-group my-2">
                 {conversations.map((conversation) => (
                     <li className="list-group-item list-group-item-action" key={conversation._id}>
                         <Link className="list-group-item-action" to={`/conversations/${conversation._id}`} style={{textDecoration: 'none'}}>Conversation {conversation._id}</Link>

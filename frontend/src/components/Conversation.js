@@ -37,6 +37,8 @@ export default function Conversation() {
 
   useEffect(()=> {
     fetchMessages()
+
+    setInput("Hi")
   },[fetchMessages])
 
   const handleSendUserMessage = async (e) => {
@@ -122,7 +124,7 @@ export default function Conversation() {
         </div>
       </div>
 
-      <form className="d-flex flex-row position-fixed bottom-0 p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
+      <form className="d-flex flex-row position-fixed bottom-0 bg-white p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
         <input 
           className="form-control border-0" 
           placeholder="Type here..." 
@@ -132,7 +134,7 @@ export default function Conversation() {
         />
         <button 
           type="submit" 
-          className="btn btn-white" 
+          className="btn btn-secondary border-0 m-1" 
           onClick={e => {
             handleSendUserMessage(e)
             handleGetBotResponse(e)
