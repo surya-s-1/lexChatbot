@@ -37,7 +37,6 @@ export default function Conversation() {
   useEffect(()=> {
     fetchMessages()
 
-    setInput("Hi")
   },[fetchMessages])
 
   const handleSendUserMessage = async (e) => {
@@ -125,16 +124,16 @@ export default function Conversation() {
 
       <div className="row position-fixed bottom-0 p-0 m-0" style={{maxHeight: '20%', width: '40%', zIndex: 0}}>
         <form className="row">
-          <textarea 
+          <input 
             className="form-control col" 
             placeholder="Type here..." 
             value={input}
             onChange={e => setInput(e.target.value)}
-            style={{ resize: 'none', height: 'auto', overflow: 'hidden' }} 
+            style={{ overflow: 'scroll' }} 
             disabled={closed}
           />
           <button 
-            type="button" 
+            type="submit" 
             className="btn btn-primary mt-2" 
             onClick={e => {
               handleSendUserMessage(e)

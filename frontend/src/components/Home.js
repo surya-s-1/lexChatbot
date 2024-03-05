@@ -59,7 +59,14 @@ export default function Home() {
 
     return (
         <div className="container" style={{ width: '40%' }}>
-            <h2>Conversations</h2>
+            <nav class="navbar sticky-top navbar-light bg-light px-2 py-1">
+                <h1 class="navbar-brand m-0">
+                    Conversations
+                </h1>
+                <button className="btn btn-primary m-0" onClick={createConversation}>
+                    Start Conversation
+                </button>
+            </nav>
             <ul className="list-group">
                 {conversations.map((conversation) => (
                     <li className="list-group-item list-group-item-action" key={conversation._id}>
@@ -70,7 +77,6 @@ export default function Home() {
                     </li>
                 ))}
             </ul>
-            <button className="position-fixed bottom-0 btn btn-primary" onClick={createConversation}>Start Conversation</button>
         </div>
     )
 }

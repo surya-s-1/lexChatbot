@@ -16,7 +16,7 @@ export default function MessageWrapper({content, sender, timestamp}) {
     } else {
         return(
             <div className="alert alert-secondary p-2 m-0 float-start" style={{maxWidth: '75%'}}>
-                {content}
+                <TypeAnimation sequence={[content]} speed={75} cursor={false} />
                 <div className="font-weight-light" style={{fontSize: '10px'}}>
                     {time}
                 </div>
@@ -27,8 +27,8 @@ export default function MessageWrapper({content, sender, timestamp}) {
 
 export function LoadingWrapper() {
     return(
-        <div className="p-2 m-0 float-start" style={{opacity: '50%'}}>
-            <TypeAnimation sequence={['Loading...',650,'']} speed={65} repeat={Infinity} cursor={true} />
+        <div className="alert alert-secondary p-2 m-0 float-start" style={{maxWidth: 'fit-content'}}>
+            <TypeAnimation sequence={['...',650,'']} speed={65} repeat={Infinity} cursor={true} />
         </div>
     )
 }
