@@ -9,9 +9,6 @@ export class Conversation {
     @Prop({type: [MessageSchema]})
     messages: Message[]
 
-    @Prop({type: [MessageSchema]})
-    tempStorage: Message[]
-
     @Prop()
     sessionId: string
     

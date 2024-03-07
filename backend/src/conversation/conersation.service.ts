@@ -72,15 +72,4 @@ export class ConversationService {
             return {success: false}
         }
     }
-
-    async permanentStorage(conversationId: string, content: string, sender: string): Promise<Conversation> {
-        const conversation = await this.conversationModel.findById(new Object(conversationId))
-        const timestamp = new Date(Date.now())
-        const sanitizedMsg = sanitizeInput(content)
-        const newMessage = { content: sanitizedMsg, sender, timestamp }
-
-        conversation.messages.push(newMessage)
-        
-        return conversation.save()
-    }
 }
