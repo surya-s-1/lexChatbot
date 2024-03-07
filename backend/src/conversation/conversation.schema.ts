@@ -9,11 +9,14 @@ export class Conversation {
     @Prop({type: [MessageSchema]})
     messages: Message[]
 
+    @Prop({type: [MessageSchema]})
+    tempStorage: Message[]
+
     @Prop()
     sessionId: string
     
     @Prop()
-    state: string;
+    state: string
 }
 
 export const ConversationSchema = SchemaFactory.createForClass(Conversation)
