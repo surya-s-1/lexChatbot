@@ -8,7 +8,8 @@ export default function MessageWrapper({content, sender, timestamp}) {
         return(
             <div className="alert alert-info p-2 m-0 float-end" style={{maxWidth: '75%'}}>
                 {content}
-                <div className="font-weight-light" style={{fontSize: '10px'}}>
+                <br />
+                <div className="font-weight-light float-end" style={{fontSize: '10px'}}>
                     {time}
                 </div>
             </div>
@@ -17,7 +18,8 @@ export default function MessageWrapper({content, sender, timestamp}) {
         return(
             <div className="alert alert-secondary p-2 m-0 float-start" style={{maxWidth: '75%'}}>
                 <TypeAnimation sequence={[content]} speed={75} cursor={false} />
-                <div className="font-weight-light" style={{fontSize: '10px'}}>
+                <br />
+                <div className="font-weight-light float-start" style={{fontSize: '10px'}}>
                     {time}
                 </div>
             </div>
