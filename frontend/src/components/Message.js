@@ -19,7 +19,7 @@ export default function MessageWrapper({content, sender, timestamp}) {
             <div className="alert alert-secondary p-2 m-0 float-start" style={{maxWidth: '75%'}}>
                 <TypeAnimation sequence={[content]} speed={75} cursor={false} />
                 <br />
-                <div className="font-weight-light float-start" style={{fontSize: '10px'}}>
+                <div className="font-weight-light float-end" style={{fontSize: '10px'}}>
                     {time}
                 </div>
             </div>

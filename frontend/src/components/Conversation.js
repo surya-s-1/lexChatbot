@@ -19,41 +19,38 @@ export default function Conversation() {
   const fetchMessages = useCallback(async () => {
 
     try {
-
       const response = await fetch(`${apiBaseUrl}/conversations/${params.id}`)
       const conversation = await response.json()
   
       if (conversation.state === "Close") {
-        setClosed(true);
+        setClosed(true)
       } else {
-        setClosed(false);
+        setClosed(false)
       }
 
       const newMessages = conversation.messages.filter(message => !messageIds.current.has(message._id))
       let cumulativeCharacters = 0;
 
       for (let i = 0; i < newMessages.length; i++) {
+        
         setTimeout(()=>{
-          setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
-        }, cumulativeCharacters * 2000 / 75)
+            setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
+          }, conversation.state === "Close" ? 0 : cumulativeCharacters * 2000/75)
 
         cumulativeCharacters += newMessages[i].content.length
-        
+
         messageIds.current.add(newMessages[i]._id)
-    
-        scrollDown.current.scrollIntoView(true, {
-          behavior: 'smooth'
-        })
       }
+
+      scrollDown.current.scrollIntoView(true, {
+        behavior: 'smooth'
+      })
+
     } catch (error) {
-
       console.error('Error fetching messages:', error)
-
     }
 
   }, [params.id])
-  
-
 
   useEffect(()=> {
     fetchMessages()
