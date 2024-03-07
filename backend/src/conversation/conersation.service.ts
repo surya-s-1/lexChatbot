@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Conversation, ConversationDocument } from "./conversation.schema";
 import { Bot } from "./lex/lex.client";
+import { sanitizeInput } from "../utilities/sanitizeInput";
 
 @Injectable()
 export class ConversationService {
@@ -25,7 +26,8 @@ export class ConversationService {
     async addMessage(conversationId: string, content: string, sender: string): Promise<Conversation> {
         const conversation = await this.conversationModel.findById(new Object(conversationId))
         const timestamp = new Date(Date.now())
-        const newMessage = { content, sender, timestamp }
+        const sanitizedMsg = sanitizeInput(content)
+        const newMessage = { content: sanitizedMsg, sender, timestamp }
 
         conversation.messages.push(newMessage)
         
@@ -35,18 +37,20 @@ export class ConversationService {
     async getBotMessages(conversationId: string, content: string): Promise<Conversation> {
         const conversation = await this.conversationModel.findById(new Object(conversationId))
 
-        const botResponse = await Bot(conversation.sessionId, content)
+        const sanitizedInputMsg = sanitizeInput(content)
+        const botResponse = await Bot(conversation.sessionId, sanitizedInputMsg)
 
         botResponse.messages?.map(message => {
             const timestampBot = new Date(Date.now())
 
-            const newMessageBot = { content: message['content'], sender: "chatbot", timestamp: timestampBot}
+            const sanitizedMsg = sanitizeInput(message['content'])
+            const newMessageBot = { content: sanitizedMsg, sender: "chatbot", timestamp: timestampBot}
 
             conversation.messages.push(newMessageBot)
         })
 
         conversation.state = botResponse.sessionState.dialogAction.type==="Close"?"Close":"InProgress"
-        
+
         return conversation.save()
     }
 
