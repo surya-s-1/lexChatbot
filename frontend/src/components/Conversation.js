@@ -4,6 +4,8 @@ import { IoIosArrowBack } from "react-icons/io"
 import { BsFillSendFill } from "react-icons/bs"
 import MessageWrapper, {LoadingWrapper} from "./Message"
 
+const apiBaseUrl = `http://localhost:8000`
+
 export default function Conversation() {
   const params =  useParams()
   const navigate = useNavigate()
@@ -15,7 +17,7 @@ export default function Conversation() {
 
   const fetchMessages = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:8000/conversations/${params.id}`)
+      const response = await fetch(`${apiBaseUrl}/conversations/${params.id}`)
       const conversation = await response.json()
 
       if (conversation.state === "Close") {
@@ -49,7 +51,7 @@ export default function Conversation() {
         sender: "user"
       }
 
-      const response = await fetch(`http://localhost:8000/conversations/${params.id}/messages`, {
+      const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/messages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -74,7 +76,7 @@ export default function Conversation() {
         content: input
       }
 
-      const response = await fetch(`http://localhost:8000/conversations/${params.id}/botmessages`, {
+      const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/botmessages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

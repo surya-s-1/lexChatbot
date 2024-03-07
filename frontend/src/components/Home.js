@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 
+const apiBaseUrl = `http://localhost:8000`
+
 export default function Home() {
     const [conversations, setConversations] = useState([])
     const navigate = useNavigate()
@@ -9,7 +11,7 @@ export default function Home() {
     useEffect(() => {
         const fetchConversations = async () => {
             try {
-                const response = await fetch('http://localhost:8000/conversations')
+                const response = await fetch(`${apiBaseUrl}/conversations`)
                 
                 if (!response.ok) {
                     throw new Error(`Error fetching conversations: ${response.status}`);
@@ -28,7 +30,7 @@ export default function Home() {
 
     const createConversation = async () => {
         try {
-            const response = await fetch('http://localhost:8000/conversations/create', {
+            const response = await fetch(`${apiBaseUrl}/conversations/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -49,7 +51,7 @@ export default function Home() {
 
     const deleteConversation = async (conversationId) => {
         try {
-            await fetch(`http://localhost:8000/conversations/${conversationId}`, {
+            await fetch(`${apiBaseUrl}/conversations/${conversationId}`, {
                 method: 'DELETE'
             })
         } catch (err) {
