@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
+import { verifyJwt } from "./verifytoken";
 
 const apiBaseUrl = `http://localhost:8000`
-const token = localStorage.getItem('token')
 
 export default function Home() {
     const [conversations, setConversations] = useState([])
@@ -12,47 +12,66 @@ export default function Home() {
     useEffect(() => {
         const fetchConversations = async () => {
             try {
-                const response = await fetch(`${apiBaseUrl}/conversations`, {
-                    method: 'POST',
-                    body: JSON.stringify({token}),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                
-                if (!response.ok) {
-                    throw new Error(`Error fetching conversations: ${response.status}`);
+                const token = localStorage.getItem('token')
+
+                if (!token) {
+                    navigate('/login')
                 }
 
-                const data = await response.json()
-                console.log(data)
-                setConversations(data.conversation)
+                const tokenIsValid = verifyJwt(token)
+
+                if (tokenIsValid) {
+                    const response = await fetch(`${apiBaseUrl}/conversations`, {
+                        method: 'POST',
+                        body: JSON.stringify({token}),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error fetching conversations: ${response.status}`);
+                    }
+    
+                    const data = await response.json()
+                    
+                    setConversations(data.conversation)
+                } else {
+                    navigate('/login')
+                }
             } catch (error) {
                 console.error('Error fetching conversations: ', error)
             }
         };
 
         fetchConversations();
-    }, [conversations])
+    }, [conversations, navigate])
 
     const createConversation = async () => {
         try {
-            const response = await fetch(`${apiBaseUrl}/conversations/create`, {
-                method: 'POST',
-                body: JSON.stringify({token}),
-                headers: {
-                    'Content-Type': 'application/json'
+            const token = localStorage.getItem('token')
+            const tokenIsValid = verifyJwt(token)
+
+            if (tokenIsValid) {
+                const response = await fetch(`${apiBaseUrl}/conversations/create`, {
+                    method: 'POST',
+                    body: JSON.stringify({token}),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+    
+                if (!response.ok) {
+                    throw new Error(`Error creating conversation: ${response.status}`);
                 }
-            })
-
-            if (!response.ok) {
-                throw new Error(`Error creating conversation: ${response.status}`);
+    
+                const data = await response.json()
+                
+                setConversations([...conversations, data?.conversation])
+                navigate(`/conversations/${data.conversation._id}`)
+            } else {
+                navigate('/login')
             }
-
-            const data = await response.json()
-            
-            setConversations([...conversations, data.conversation])
-            navigate(`/conversations/${data.conversation._id}`)
         } catch (error) {
             console.error('Error creating conversation: ', error)
         }
@@ -60,15 +79,32 @@ export default function Home() {
 
     const deleteConversation = async (conversationId) => {
         try {
-            await fetch(`${apiBaseUrl}/conversations/${conversationId}`, {
-                method: 'DELETE',
-                body: JSON.stringify({token}),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            const token = localStorage.getItem('token')
+            const tokenIsValid = verifyJwt(token)
+
+            if (tokenIsValid) {
+                await fetch(`${apiBaseUrl}/conversations/${conversationId}`, {
+                    method: 'DELETE',
+                    body: JSON.stringify({token}),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+            } else {
+                navigate('/login')
+            }
         } catch (err) {
             console.log('Error deleting converstaion:', err)
+        }
+    }
+
+    const logout = () => {
+        try {
+            localStorage.removeItem('token')
+
+            navigate('/login')
+        } catch (error) {
+            console.log('Error logging out: ', error)
         }
     }
 
@@ -81,9 +117,12 @@ export default function Home() {
                 <button className="btn btn-primary m-0" onClick={createConversation}>
                     Start Conversation
                 </button>
+                <button className="btn btn-danger m-0" onClick={logout}>
+                    Logout
+                </button>
             </nav>
             <ul className="list-group my-2">
-                {conversations.map((conversation) => (
+                {conversations?.map((conversation) => (
                     <li className="list-group-item list-group-item-action" key={conversation._id}>
                         <Link className="list-group-item-action" to={`/conversations/${conversation._id}`} style={{textDecoration: 'none'}}>Conversation {conversation._id}</Link>
                         <button className="btn btn-danger px-1 py-0 m-0 float-end" onClick={()=>{deleteConversation(conversation._id)}}>

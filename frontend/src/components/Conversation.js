@@ -3,9 +3,9 @@ import { useParams, useNavigate } from "react-router-dom"
 import { IoIosArrowBack } from "react-icons/io"
 import { BsFillSendFill } from "react-icons/bs"
 import MessageWrapper, {LoadingWrapper} from "./Message"
+import { verifyJwt } from "./verifytoken"
 
 const apiBaseUrl = `http://localhost:8000`
-const token = localStorage.getItem('token')
 
 export default function Conversation() {
   const params =  useParams()
@@ -19,44 +19,56 @@ export default function Conversation() {
 
   const fetchMessages = useCallback(async () => {
     try {
-      const response = await fetch(`${apiBaseUrl}/conversations/${params.id}`, {
-        method: 'POST',
-        body: JSON.stringify({token}),
-        headers: {
-          'Content-Type': 'application/json',
+      const token = localStorage.getItem('token')
+      
+      if (!token) {
+        navigate('/login')
+      }
+      
+      const tokenIsValid = verifyJwt(token)
+
+      if (tokenIsValid) {
+        const response = await fetch(`${apiBaseUrl}/conversations/${params.id}`, {
+          method: 'POST',
+          body: JSON.stringify({token}),
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+
+        const data = await response.json()
+    
+        if (data.conversation.state === "Close") {
+          setClosed(true)
+        } else {
+          setClosed(false)
         }
-      })
-      const data = await response.json()
-  
-      if (data.conversation.state === "Close") {
-        setClosed(true)
+
+        const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
+        let cumulativeCharacters = 0;
+
+        for (let i = 0; i < newMessages.length; i++) {
+          
+          setTimeout(()=>{
+              setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
+            }, data.conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 75)
+
+          cumulativeCharacters += newMessages[i].content.length
+
+          messageIds.current.add(newMessages[i]._id)
+        }
+
+        scrollDown.current.scrollIntoView(true, {
+          behavior: 'smooth'
+        })
       } else {
-        setClosed(false)
+        navigate('/login')
       }
-
-      const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
-      let cumulativeCharacters = 0;
-
-      for (let i = 0; i < newMessages.length; i++) {
-        
-        setTimeout(()=>{
-            setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
-          }, data.conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 76)
-
-        cumulativeCharacters += newMessages[i].content.length
-
-        messageIds.current.add(newMessages[i]._id)
-      }
-
-      scrollDown.current.scrollIntoView(true, {
-        behavior: 'smooth'
-      })
-
     } catch (error) {
       console.error('Error fetching messages:', error)
     }
 
-  }, [params.id])
+  }, [params.id, navigate])
 
   useEffect(()=> {
     fetchMessages()
@@ -68,21 +80,28 @@ export default function Conversation() {
     e.preventDefault()
     if (input.trim() !== "") {
 
-      const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/messages`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({token, content: input, sender: "user"}),
-        })
-      
-      if (!response.ok) {
-        throw new Error(`Failed to send message: ${response.status}`);
-      }
+      const token = localStorage.getItem('token')
+      const tokenIsValid = verifyJwt(token)
 
-      fetchMessages()
-      setInput("")
-      setLoading(true)
+      if (tokenIsValid) {
+        const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/messages`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({token, content: input, sender: "user"}),
+          })
+        
+        if (!response.ok) {
+          throw new Error(`Failed to send message: ${response.status}`);
+        }
+
+        fetchMessages()
+        setInput("")
+        setLoading(true)
+      } else {
+        navigate('/login')
+      }
     }
   }
 
@@ -90,21 +109,28 @@ export default function Conversation() {
     e.preventDefault()
     if (input.trim() !== "") {
 
-      const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/botmessages`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({token, content: input}),
-        })
-      
-      if (!response.ok) {
-        throw new Error(`Failed to send message: ${response.status}`);
-      }
+      const token = localStorage.getItem('token')
+      const tokenIsValid = verifyJwt(token)
 
-      fetchMessages()
-      setInput("")
-      setLoading(false)
+      if (tokenIsValid) {
+        const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/botmessages`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({token, content: input}),
+          })
+        
+        if (!response.ok) {
+          throw new Error(`Failed to send message: ${response.status}`);
+        }
+
+        fetchMessages()
+        setInput("")
+        setLoading(false)
+      } else {
+        navigate('/login')
+      }
     }
   }
 

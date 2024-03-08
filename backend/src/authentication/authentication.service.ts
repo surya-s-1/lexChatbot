@@ -30,8 +30,7 @@ export class UserService {
             
             if (result) {
 
-                var token = jwt.sign({email: email}, privateKey, {expiresIn: '1h'})
-                var decoded = jwt.verify(token, privateKey)
+                var token = jwt.sign({email: email}, privateKey, { expiresIn: '15m' })
 
                 return {
                     token: token,

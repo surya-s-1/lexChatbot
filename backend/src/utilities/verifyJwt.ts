@@ -10,19 +10,18 @@ export function verifyJwt(token: string) {
     } else {
         try {
             const decoded = jwt.verify(token, privateKey)
-    
-            if (Date.now() > decoded.exp*1000) {
-                return {
-                    tokenValid: false,
-                    message: 'Session expired. Login Again'
-                }
-            }
-
+            
             return {
                 tokenValid: true
             }
         } catch (error) {
-            console.error('JWT verify error: ', error)
+
+            console.log(error)
+
+            return {
+                tokenValid: false,
+                message: 'Session expired. Login Again'
+            }
         }
     }
 }
