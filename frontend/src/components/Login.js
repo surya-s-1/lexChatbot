@@ -37,7 +37,8 @@ export default function Login() {
     }
 
     return(
-        <form className="container" onSubmit={handleSubmit} style={{maxWidth: '40%'}}>
+        <div className="container" style={{maxWidth: '40%'}}>
+        <form onSubmit={handleSubmit}>
             <h1>Login</h1>
             <div className="form-group">
                 <label>Email address</label>
@@ -55,5 +56,7 @@ export default function Login() {
             <br />
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
+        <small>Don't have an account yet? <a href="/register">Register</a> </small>
+        </div>
     )
 }
