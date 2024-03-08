@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
 
 const saltRounds = 10
+const privateKey = 'lexChatbotApp'
 
 @Injectable()
 export class UserService {
@@ -28,7 +29,14 @@ export class UserService {
             const result = bcrypt.compareSync(password, user.password)
             
             if (result) {
+
+                var token = jwt.sign({email: email}, privateKey, {expiresIn: '1m'})
+                var decoded = jwt.verify(token, privateKey)
+
+                console.log(decoded)
+
                 return {
+                    token: token,
                     success: true,
                     message: 'Login successful'
                 }
