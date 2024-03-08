@@ -6,7 +6,7 @@ import { UserService } from "./authentication.service";
 
 @Module({
     imports: [
-        MongooseModule.forRoot(process.env.MONGODB_URL, {dbName: process.env.MONGODB_DBNAME}),
+        MongooseModule.forRoot(`mongodb://localhost:27017`, {dbName: 'lexChatbot'}),
         MongooseModule.forFeature([{name: 'User', schema: UserSchema}])
     ],
     controllers: [UserController],

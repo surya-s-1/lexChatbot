@@ -5,8 +5,8 @@ import { User, UserDocument } from "./authentication.schema";
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
 
-const saltRounds = process.env.SALTROUNDS
-const privateKey = process.env.JWT_PRIVATE_KEY
+const saltRounds = 10
+const privateKey = 'lexChatbotApp'
 
 @Injectable()
 export class UserService {
