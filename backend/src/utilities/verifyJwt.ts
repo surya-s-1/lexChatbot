@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const privateKey = 'lexChatbotApp'
+const privateKey = process.env.JWT_PRIVATE_KEY
 
 export function verifyJwt(token: string) {
     if (!token) {

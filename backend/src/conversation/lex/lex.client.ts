@@ -1,10 +1,10 @@
 const { LexRuntimeV2Client, RecognizeTextCommand } = require("@aws-sdk/client-lex-runtime-v2")
 
 const config = {
-    region: "us-east-1",
+    region: process.env.LEX_REGION,
     credentials: {
-        accessKeyId: 'AKIA52CAQV6I64FIB37C',
-        secretAccessKey: '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'
+        accessKeyId: process.env.LEX_ACCESS_KEY_ID,
+        secretAccessKey: process.env.LEX_SECRET_ACCESS_KEY
     }
 }
 
@@ -13,9 +13,9 @@ const client = new LexRuntimeV2Client(config)
 export async function Bot(sessionId, userInput) {
 
     const input = {
-        botId: "Z9HEIJJPDN",
-        botAliasId: "VQLV9AOWIR",
-        localeId: "en_US",
+        botId: process.env.LEX_BOT_ID,
+        botAliasId: process.env.LEX_BOT_ALIAS_ID,
+        localeId: process.env.LEX_LOCALE_ID,
         sessionId: sessionId,
         text: userInput
     }

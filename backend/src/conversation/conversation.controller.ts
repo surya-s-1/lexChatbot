@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Post, Delete, Param, Body } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 import { verifyJwt } from '../utilities/verifyJwt';
 

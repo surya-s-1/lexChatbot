@@ -6,7 +6,7 @@ import { ConversationSchema } from "./conversation.schema";
 
 @Module({
     imports: [
-        MongooseModule.forRoot(`mongodb://localhost:27017`, {dbName: 'lexChatbot'}),
+        MongooseModule.forRoot(process.env.MONGODB_URL, {dbName: process.env.MONGODB_DBNAME}),
         MongooseModule.forFeature([{name: 'Conversation', schema: ConversationSchema}])
     ],
     controllers: [ConversationController],
