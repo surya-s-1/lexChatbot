@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 
 const apiBaseUrl = `http://localhost:8000`
+const token = localStorage.getItem('token')
 
 export default function Home() {
     const [conversations, setConversations] = useState([])
@@ -11,7 +12,13 @@ export default function Home() {
     useEffect(() => {
         const fetchConversations = async () => {
             try {
-                const response = await fetch(`${apiBaseUrl}/conversations`)
+                const response = await fetch(`${apiBaseUrl}/conversations`, {
+                    method: 'POST',
+                    body: JSON.stringify({token}),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
                 
                 if (!response.ok) {
                     throw new Error(`Error fetching conversations: ${response.status}`);
@@ -19,7 +26,7 @@ export default function Home() {
 
                 const data = await response.json()
                 console.log(data)
-                setConversations(data)
+                setConversations(data.conversation)
             } catch (error) {
                 console.error('Error fetching conversations: ', error)
             }
@@ -32,6 +39,7 @@ export default function Home() {
         try {
             const response = await fetch(`${apiBaseUrl}/conversations/create`, {
                 method: 'POST',
+                body: JSON.stringify({token}),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -41,9 +49,10 @@ export default function Home() {
                 throw new Error(`Error creating conversation: ${response.status}`);
             }
 
-            const newConversation = await response.json()
-            setConversations([...conversations, newConversation])
-            navigate(`/conversations/${newConversation._id}`)
+            const data = await response.json()
+            
+            setConversations([...conversations, data.conversation])
+            navigate(`/conversations/${data.conversation._id}`)
         } catch (error) {
             console.error('Error creating conversation: ', error)
         }
@@ -52,7 +61,11 @@ export default function Home() {
     const deleteConversation = async (conversationId) => {
         try {
             await fetch(`${apiBaseUrl}/conversations/${conversationId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                body: JSON.stringify({token}),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
         } catch (err) {
             console.log('Error deleting converstaion:', err)

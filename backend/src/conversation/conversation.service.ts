@@ -19,8 +19,8 @@ export class ConversationService {
         
         const sessionNow = sessionId()
 
-        const newConversation = new this.conversationModel({sessionId: sessionNow, messages: []})
-        return newConversation.save()
+        const newConversation = this.conversationModel.create({sessionId: sessionNow, messages: []})
+        return newConversation
     }
 
     async addMessage(conversationId: string, content: string, sender: string): Promise<Conversation> {

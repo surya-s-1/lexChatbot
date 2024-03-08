@@ -5,6 +5,7 @@ import { BsFillSendFill } from "react-icons/bs"
 import MessageWrapper, {LoadingWrapper} from "./Message"
 
 const apiBaseUrl = `http://localhost:8000`
+const token = localStorage.getItem('token')
 
 export default function Conversation() {
   const params =  useParams()
@@ -17,25 +18,30 @@ export default function Conversation() {
   const messageIds = useRef(new Set())
 
   const fetchMessages = useCallback(async () => {
-
     try {
-      const response = await fetch(`${apiBaseUrl}/conversations/${params.id}`)
-      const conversation = await response.json()
+      const response = await fetch(`${apiBaseUrl}/conversations/${params.id}`, {
+        method: 'POST',
+        body: JSON.stringify({token}),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      const data = await response.json()
   
-      if (conversation.state === "Close") {
+      if (data.conversation.state === "Close") {
         setClosed(true)
       } else {
         setClosed(false)
       }
 
-      const newMessages = conversation.messages.filter(message => !messageIds.current.has(message._id))
+      const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
       let cumulativeCharacters = 0;
 
       for (let i = 0; i < newMessages.length; i++) {
         
         setTimeout(()=>{
             setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
-          }, conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 76)
+          }, data.conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 76)
 
         cumulativeCharacters += newMessages[i].content.length
 
@@ -61,17 +67,13 @@ export default function Conversation() {
   const handleSendUserMessage = async (e) => {
     e.preventDefault()
     if (input.trim() !== "") {
-      const newMessage = {
-        content: input,
-        sender: "user"
-      }
 
       const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/messages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(newMessage),
+          body: JSON.stringify({token, content: input, sender: "user"}),
         })
       
       if (!response.ok) {
@@ -87,16 +89,13 @@ export default function Conversation() {
   const handleGetBotResponse = async (e) => {
     e.preventDefault()
     if (input.trim() !== "") {
-      const newMessage = {
-        content: input
-      }
 
       const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/botmessages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(newMessage),
+          body: JSON.stringify({token, content: input}),
         })
       
       if (!response.ok) {
@@ -115,7 +114,7 @@ export default function Conversation() {
        style={{zIndex: 1, width: '40%', height: '7%', boxShadow: "0 1px 1px grey"}}>
         <div class="collapse navbar-collapse">
           <div class="navbar-nav d-flex">
-            <button class="nav-link px-2" style={{color: 'white'}} onClick={()=>{navigate('/')}}>
+            <button class="nav-link px-2" style={{color: 'white'}} onClick={()=>{navigate('/home')}}>
               <IoIosArrowBack />
             </button>
           </div>
