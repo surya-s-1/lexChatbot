@@ -35,7 +35,7 @@ export default function Conversation() {
         
         setTimeout(()=>{
             setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
-          }, conversation.state === "Close" ? 0 : cumulativeCharacters * 2000/75)
+          }, conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 76)
 
         cumulativeCharacters += newMessages[i].content.length
 
