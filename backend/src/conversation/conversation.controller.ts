@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
-import { ConversationService } from './conersation.service';
+import { ConversationService } from './conversation.service';
 import { Conversation } from './conversation.schema';
 
 @Controller('conversations')
