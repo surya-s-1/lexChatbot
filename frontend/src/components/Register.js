@@ -27,7 +27,9 @@ export default function Register() {
             } else {
                 setMessage(data.message)
 
-                navigate('/login')
+                setTimeout(()=>{
+                    navigate('/login')
+                }, 1000)
             }
         } catch (err) {
             console.error('Register failed: ', err)

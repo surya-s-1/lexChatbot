@@ -27,7 +27,9 @@ export default function Login() {
 
                 localStorage.setItem('token',data.token)
 
-                navigate('/home')
+                setTimeout(()=>{
+                    navigate('/home')
+                }, 1000)
             }
         } catch (err) {
             console.error('Login failed: ', err)
