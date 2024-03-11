@@ -10,7 +10,7 @@ export class ConversationController {
     async createConversation(
         @Body('token') token: string
     ) {
-        const verify = verifyJwt(token)
+        const verify = await verifyJwt(token)
 
         if (verify.tokenValid) {
             const result = await this.conversationService.createConversation()
@@ -28,7 +28,7 @@ export class ConversationController {
     async getConversations(
         @Body('token') token: string
     ) {
-        const verify = verifyJwt(token)
+        const verify = await verifyJwt(token)
 
         if (verify.tokenValid) {
             const result = await this.conversationService.getAllConversations()
@@ -47,7 +47,7 @@ export class ConversationController {
         @Param('id') conversationId: string,
         @Body('token') token: string
     ) {
-        const verify = verifyJwt(token)
+        const verify = await verifyJwt(token)
 
         if (verify.tokenValid) {
             const result = await this.conversationService.getConversation(conversationId)
@@ -68,7 +68,7 @@ export class ConversationController {
         @Body('sender') sender: string,
         @Body('token') token: string
     ) {
-        const verify = verifyJwt(token)
+        const verify = await verifyJwt(token)
 
         if (verify.tokenValid) {
             const result = await this.conversationService.addMessage(conversationId, content, sender)
@@ -88,7 +88,7 @@ export class ConversationController {
         @Body('content') content: string,
         @Body('token') token: string
     ) {
-        const verify = verifyJwt(token)
+        const verify = await verifyJwt(token)
 
         if (verify.tokenValid) {
             const result = await this.conversationService.getBotMessages(conversationId, content)
@@ -107,7 +107,7 @@ export class ConversationController {
         @Param('id') conversationId: string,
         @Body('token') token: string
     ) {
-        const verify = verifyJwt(token)
+        const verify = await verifyJwt(token)
 
         if (verify.tokenValid) {
             const result = await this.conversationService.deleteConversation(conversationId)

@@ -49,10 +49,10 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
             <h1>Login</h1>
             <div className="form-group">
-                <input type="email" className="form-control my-2" placeholder="Enter Email" value={email} onChange={e=>setEmail(e.target.value)} />
+                <input type="email" className="form-control my-2" placeholder="Enter Email" value={email} onChange={e=>setEmail(e.target.value)} required />
             </div>
             <div className="form-group my-1">
-                <input type="password" className="form-control my-2" placeholder="Enter Password" value={password} onChange={e=>setPassword(e.target.value)} />
+                <input type="password" className="form-control my-2" placeholder="Enter Password" value={password} onChange={e=>setPassword(e.target.value)} required />
             </div>
             {message ? 
             (<div className="alert alert-danger my-1" role="alert">

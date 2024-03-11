@@ -1,7 +1,10 @@
+import { ConfigModule } from "@nestjs/config"
 const jwt = require('jsonwebtoken')
-const privateKey = 'lexChatbotApp'
 
-export function verifyJwt(token: string) {
+export async function verifyJwt(token: string) {
+    await ConfigModule.envVariablesLoaded
+    const privateKey = process.env.AUTH_PRIVATE_KEY
+
     if (!token) {
         return {
             tokenValid: false,
@@ -9,18 +12,17 @@ export function verifyJwt(token: string) {
         }
     } else {
         try {
-            const decoded = jwt.verify(token, privateKey)
+            await jwt.verify(token, privateKey)
             
             return {
                 tokenValid: true
             }
         } catch (error) {
-
             console.log(error)
 
             return {
                 tokenValid: false,
-                message: 'Session expired. Login Again'
+                message: 'Internal Error'
             }
         }
     }

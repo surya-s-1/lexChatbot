@@ -6,7 +6,9 @@ import { ConversationModule } from './conversation/conversation.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthenticationModule, ConversationModule],
+  imports: [ConfigModule.forRoot({
+    cache: true
+  }), AuthenticationModule, ConversationModule],
   controllers: [AppController],
   providers: [AppService],
 })

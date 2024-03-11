@@ -3,10 +3,14 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ConversationController } from "./conversation.controller";
 import { ConversationService } from "./conversation.service";
 import { ConversationSchema } from "./conversation.schema";
+import { ConfigModule } from '@nestjs/config'
 
 @Module({
     imports: [
-        MongooseModule.forRoot('mongodb://localhost:27017', {dbName: 'lexChatbot'}),
+        ConfigModule.forRoot({
+            cache: true
+        }),
+        MongooseModule.forRoot(process.env.MONGODB_URL, {dbName: process.env.MONGODB_DBNAME}),
         MongooseModule.forFeature([{name: 'Conversation', schema: ConversationSchema}])
     ],
     controllers: [ConversationController],
