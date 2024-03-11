@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Conversation, ConversationDocument } from "./conversation.schema";
 import { Bot } from "./lex/lex.client";
-import { sanitizeInput } from "../utilities/sanitizeInput";
+import { sanitizeMsgInput } from "../utilities/sanitizeInput";
 
 @Injectable()
 export class ConversationService {
@@ -26,7 +26,7 @@ export class ConversationService {
     async addMessage(conversationId: string, content: string, sender: string): Promise<Conversation> {
         const conversation = await this.conversationModel.findById(new Object(conversationId))
         const timestamp = new Date(Date.now())
-        const sanitizedMsg = sanitizeInput(content)
+        const sanitizedMsg = sanitizeMsgInput(content)
         const newMessage = { content: sanitizedMsg, sender, timestamp }
 
         conversation.messages.push(newMessage)
@@ -37,13 +37,13 @@ export class ConversationService {
     async getBotMessages(conversationId: string, content: string): Promise<Conversation> {
         const conversation = await this.conversationModel.findById(new Object(conversationId))
 
-        const sanitizedInputMsg = sanitizeInput(content)
+        const sanitizedInputMsg = sanitizeMsgInput(content)
         const botResponse = await Bot(conversation.sessionId, sanitizedInputMsg)
 
         botResponse.messages?.map(message => {
             const timestampBot = new Date(Date.now())
 
-            const sanitizedMsg = sanitizeInput(message['content'])
+            const sanitizedMsg = sanitizeMsgInput(message['content'])
             const newMessageBot = { content: sanitizedMsg, sender: "chatbot", timestamp: timestampBot}
 
             conversation.messages.push(newMessageBot)

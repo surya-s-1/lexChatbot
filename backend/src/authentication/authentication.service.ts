@@ -30,7 +30,7 @@ export class UserService {
             
             if (result) {
 
-                var token = jwt.sign({email: email}, privateKey, { expiresIn: '15m' })
+                var token = jwt.sign({email: email.toLowerCase()}, privateKey, { expiresIn: '15m' })
 
                 return {
                     token: token,
