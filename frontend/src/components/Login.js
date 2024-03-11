@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { verifyJwt } from "../utilities/verifytoken";
 
 const apiBaseUrl = `http://localhost:8000`
 
@@ -27,7 +28,6 @@ export default function Login() {
                 setMessage(data.message)
 
                 localStorage.setItem('token',data.token)
-                localStorage.setItem('email',data.email)
 
                 navigate('/home')
             }
@@ -36,25 +36,29 @@ export default function Login() {
         }
     }
 
+    useEffect(()=>{
+        const tokenIsValid = verifyJwt()
+
+        if (tokenIsValid.isValid) {
+            navigate('/home')
+        }
+    },[navigate])
+
     return(
         <div className="container" style={{maxWidth: '40%'}}>
         <form onSubmit={handleSubmit}>
             <h1>Login</h1>
             <div className="form-group">
-                <label>Email address</label>
-                <input type="email" class="form-control" placeholder="Enter email" value={email} onChange={e=>setEmail(e.target.value)} />
+                <input type="email" className="form-control my-2" placeholder="Enter Email" value={email} onChange={e=>setEmail(e.target.value)} />
             </div>
-            <div className="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" placeholder="Enter Password" value={password} onChange={e=>setPassword(e.target.value)} />
+            <div className="form-group my-1">
+                <input type="password" className="form-control my-2" placeholder="Enter Password" value={password} onChange={e=>setPassword(e.target.value)} />
             </div>
-            <br />
             {message ? 
-            (<div className="alert alert-danger" role="alert">
+            (<div className="alert alert-danger my-1" role="alert">
                 {message}
             </div>) : null}
-            <br />
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" className="btn btn-primary my-3">Login</button>
         </form>
         <small>Don't have an account yet? <a href="/register">Register</a> </small>
         </div>

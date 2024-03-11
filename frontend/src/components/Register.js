@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { verifyJwt } from "../utilities/verifytoken";
 
 const apiBaseUrl = `http://localhost:8000`
 
@@ -35,28 +36,32 @@ export default function Register() {
         }
     }
 
+    useEffect(()=>{
+        const tokenIsValid = verifyJwt()
+
+        if (tokenIsValid.isValid) {
+            navigate('/home')
+        }
+    },[navigate])
+
     return(
         <div className="container" style={{maxWidth: '40%'}}>
             <form onSubmit={handleSubmit}>
                 <h1>Register</h1>
                 <div className="form-group">
-                    <label>Name</label>
-                    <input type="name" class="form-control" placeholder="Enter Name" value={name} onChange={e=>setName(e.target.value)} />
+                    <input type="name" className="form-control my-2" placeholder="Enter Name" value={name} onChange={e=>setName(e.target.value)} />
                 </div>
                 <div className="form-group">
-                    <label>Email address</label>
-                    <input type="email" class="form-control" placeholder="Enter email" value={email} onChange={e=>setEmail(e.target.value)} />
+                    <input type="email" className="form-control my-2" placeholder="Enter Email" value={email} onChange={e=>setEmail(e.target.value)} />
                 </div>
                 <div className="form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-control" placeholder="Enter Password" value={password} onChange={e=>setPassword(e.target.value)} />
+                    <input type="password" className="form-control my-2" placeholder="Enter Password" value={password} onChange={e=>setPassword(e.target.value)} />
                 </div>
-                <br />
                 {message ? 
                 (<div className="alert alert-danger" role="alert">
                     {message}
                 </div>) : null}
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" className="btn btn-primary my-3">Register</button>
             </form>
             <small>Already have an account? <a href="/login">Login</a> </small>
         </div>

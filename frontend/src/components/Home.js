@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
-import { verifyJwt } from "./verifytoken";
+import { verifyJwt } from "../utilities/verifytoken";
 
 const apiBaseUrl = `http://localhost:8000`
 
@@ -12,18 +12,12 @@ export default function Home() {
     useEffect(() => {
         const fetchConversations = async () => {
             try {
-                const token = localStorage.getItem('token')
+                const tokenIsValid = verifyJwt()
 
-                if (!token) {
-                    navigate('/login')
-                }
-
-                const tokenIsValid = verifyJwt(token)
-
-                if (tokenIsValid) {
+                if (tokenIsValid.isValid) {
                     const response = await fetch(`${apiBaseUrl}/conversations`, {
                         method: 'POST',
-                        body: JSON.stringify({token}),
+                        body: JSON.stringify({token: tokenIsValid.token}),
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -49,13 +43,12 @@ export default function Home() {
 
     const createConversation = async () => {
         try {
-            const token = localStorage.getItem('token')
-            const tokenIsValid = verifyJwt(token)
+            const tokenIsValid = verifyJwt()
 
-            if (tokenIsValid) {
+            if (tokenIsValid.isValid) {
                 const response = await fetch(`${apiBaseUrl}/conversations/create`, {
                     method: 'POST',
-                    body: JSON.stringify({token}),
+                    body: JSON.stringify({token: tokenIsValid.token}),
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -79,13 +72,12 @@ export default function Home() {
 
     const deleteConversation = async (conversationId) => {
         try {
-            const token = localStorage.getItem('token')
-            const tokenIsValid = verifyJwt(token)
+            const tokenIsValid = verifyJwt()
 
-            if (tokenIsValid) {
+            if (tokenIsValid.isValid) {
                 await fetch(`${apiBaseUrl}/conversations/${conversationId}`, {
                     method: 'DELETE',
-                    body: JSON.stringify({token}),
+                    body: JSON.stringify({token: tokenIsValid.token}),
                     headers: {
                         'Content-Type': 'application/json'
                     }

@@ -2,8 +2,8 @@ import { useEffect, useState, useCallback, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { IoIosArrowBack } from "react-icons/io"
 import { BsFillSendFill } from "react-icons/bs"
-import MessageWrapper, {LoadingWrapper} from "./Message"
-import { verifyJwt } from "./verifytoken"
+import MessageWrapper, {LoadingWrapper} from "./MessageWrapper"
+import { verifyJwt } from "../utilities/verifytoken"
 
 const apiBaseUrl = `http://localhost:8000`
 
@@ -18,19 +18,13 @@ export default function Conversation() {
   const messageIds = useRef(new Set())
 
   const fetchMessages = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('token')
-      
-      if (!token) {
-        navigate('/login')
-      }
-      
-      const tokenIsValid = verifyJwt(token)
+    try {      
+      const tokenIsValid = verifyJwt()
 
-      if (tokenIsValid) {
+      if (tokenIsValid.isValid) {
         const response = await fetch(`${apiBaseUrl}/conversations/${params.id}`, {
           method: 'POST',
-          body: JSON.stringify({token}),
+          body: JSON.stringify({token: tokenIsValid.token}),
           headers: {
             'Content-Type': 'application/json',
           }
@@ -80,16 +74,15 @@ export default function Conversation() {
     e.preventDefault()
     if (input.trim() !== "") {
 
-      const token = localStorage.getItem('token')
-      const tokenIsValid = verifyJwt(token)
+      const tokenIsValid = verifyJwt()
 
-      if (tokenIsValid) {
+      if (tokenIsValid.isValid) {
         const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/messages`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({token, content: input, sender: "user"}),
+            body: JSON.stringify({token: tokenIsValid.token, content: input, sender: "user"}),
           })
         
         if (!response.ok) {
@@ -98,7 +91,9 @@ export default function Conversation() {
 
         fetchMessages()
         setInput("")
-        setLoading(true)
+        setTimeout(() => {
+          setLoading(true)
+        }, 500);
       } else {
         navigate('/login')
       }
@@ -109,16 +104,15 @@ export default function Conversation() {
     e.preventDefault()
     if (input.trim() !== "") {
 
-      const token = localStorage.getItem('token')
-      const tokenIsValid = verifyJwt(token)
+      const tokenIsValid = verifyJwt()
 
-      if (tokenIsValid) {
+      if (tokenIsValid.isValid) {
         const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/botmessages`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({token, content: input}),
+            body: JSON.stringify({token: tokenIsValid.token, content: input}),
           })
         
         if (!response.ok) {
@@ -166,26 +160,28 @@ export default function Conversation() {
         </div>
       </div>
 
-      <form className="d-flex flex-row position-fixed bottom-0 bg-white p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
-        <input 
-          className="form-control border-0" 
-          placeholder="Type here..." 
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          disabled={closed}
-        />
-        <button 
-          type="submit" 
-          className="btn btn-secondary border-0 m-1" 
-          onClick={e => {
-            handleSendUserMessage(e)
-            handleGetBotResponse(e)
-          }}
-          disabled={closed}
-        >
-          <BsFillSendFill />
-        </button>
-      </form>
+      {closed?null:(
+        <form className="d-flex flex-row position-fixed bottom-0 bg-white p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
+          <input 
+            className="form-control border-0" 
+            placeholder="Type here..." 
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            disabled={closed}
+          />
+          <button 
+            type="submit" 
+            className="btn btn-secondary border-0 m-1" 
+            onClick={e => {
+              handleSendUserMessage(e)
+              handleGetBotResponse(e)
+            }}
+            disabled={closed}
+          >
+            <BsFillSendFill />
+          </button>
+        </form>
+      )}
     </div>
   );
 }
