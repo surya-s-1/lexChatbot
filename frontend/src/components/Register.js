@@ -8,7 +8,8 @@ export default function Register() {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [message, setMessage] = useState(null)
+    const [successMessage, setSuccessMessage] = useState(null)
+    const [errorMessage, setErrorMessage] = useState(null)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -23,9 +24,11 @@ export default function Register() {
             const data = await response.json()
 
             if (!data.success) {
-                setMessage(data.message)
+                setErrorMessage(data.message)
+                setSuccessMessage(null)
             } else {
-                setMessage(data.message)
+                setSuccessMessage(data.message)
+                setErrorMessage(null)
 
                 setTimeout(()=>{
                     navigate('/login')
@@ -57,9 +60,13 @@ export default function Register() {
                 <div className="form-group">
                     <input type="password" className="form-control my-2" placeholder="Enter Password" value={password} onChange={e=>setPassword(e.target.value)} required />
                 </div>
-                {message ? 
-                (<div className="alert alert-danger" role="alert">
-                    {message}
+                {errorMessage ? 
+                (<div className="alert alert-danger my-1 p-2">
+                    {errorMessage}
+                </div>) : null}
+                {successMessage ? 
+                (<div className="alert alert-success my-1 p-2">
+                    {successMessage}
                 </div>) : null}
                 <button type="submit" className="btn btn-primary my-3">Register</button>
             </form>
