@@ -4,8 +4,7 @@ import { IoIosArrowBack } from "react-icons/io"
 import { BsFillSendFill } from "react-icons/bs"
 import MessageWrapper, {LoadingWrapper} from "./MessageWrapper"
 import { verifyJwt } from "../utilities/verifytoken"
-
-const apiBaseUrl = `http://localhost:8000`
+import { getAllMessagesAPI, sendUserMessageAPI, getBotMessagesAPI } from "../utilities/api"
 
 export default function Conversation() {
   const params =  useParams()
@@ -22,7 +21,7 @@ export default function Conversation() {
       const tokenIsValid = verifyJwt()
 
       if (tokenIsValid.isValid) {
-        const response = await fetch(`${apiBaseUrl}/conversations/${params.id}`, {
+        const response = await fetch(`${getAllMessagesAPI(params.id)}`, {
           method: 'POST',
           body: JSON.stringify({token: tokenIsValid.token}),
           headers: {
@@ -39,6 +38,7 @@ export default function Conversation() {
         }
 
         const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
+
         let cumulativeCharacters = 0;
 
         for (let i = 0; i < newMessages.length; i++) {
@@ -77,7 +77,7 @@ export default function Conversation() {
       const tokenIsValid = verifyJwt()
 
       if (tokenIsValid.isValid) {
-        const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/messages`, {
+        const response = await fetch(`${sendUserMessageAPI(params.id)}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ export default function Conversation() {
       const tokenIsValid = verifyJwt()
 
       if (tokenIsValid.isValid) {
-        const response = await fetch(`${apiBaseUrl}/conversations/${params.id}/botmessages`, {
+        const response = await fetch(`${getBotMessagesAPI(params.id)}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

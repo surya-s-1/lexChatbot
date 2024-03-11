@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { verifyJwt } from "../utilities/verifytoken";
 
-const apiBaseUrl = `http://localhost:8000`
-
 export default function Register() {
     const navigate = useNavigate()
 
@@ -16,7 +14,7 @@ export default function Register() {
         e.preventDefault()
 
         try {
-            const response = await fetch(`${apiBaseUrl}/register`, {
+            const response = await fetch(`${process.env.REACT_APP_REGISTER_URL}`, {
                 method: 'POST',
                 body: JSON.stringify({name, email, password}),
                 headers: { 'Content-Type' : 'application/json' }

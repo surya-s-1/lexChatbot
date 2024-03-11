@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 import { verifyJwt } from "../utilities/verifytoken";
-
-const apiBaseUrl = `http://localhost:8000`
+import { getAllConversationsAPI, createConversationAPI, deleteConversationAPI } from "../utilities/api";
 
 export default function Home() {
     const [conversations, setConversations] = useState([])
@@ -15,7 +14,7 @@ export default function Home() {
                 const tokenIsValid = verifyJwt()
 
                 if (tokenIsValid.isValid) {
-                    const response = await fetch(`${apiBaseUrl}/conversations`, {
+                    const response = await fetch(`${getAllConversationsAPI()}`, {
                         method: 'POST',
                         body: JSON.stringify({token: tokenIsValid.token}),
                         headers: {
@@ -46,7 +45,7 @@ export default function Home() {
             const tokenIsValid = verifyJwt()
 
             if (tokenIsValid.isValid) {
-                const response = await fetch(`${apiBaseUrl}/conversations/create`, {
+                const response = await fetch(`${createConversationAPI()}`, {
                     method: 'POST',
                     body: JSON.stringify({token: tokenIsValid.token}),
                     headers: {
@@ -75,7 +74,7 @@ export default function Home() {
             const tokenIsValid = verifyJwt()
 
             if (tokenIsValid.isValid) {
-                await fetch(`${apiBaseUrl}/conversations/${conversationId}`, {
+                await fetch(`${deleteConversationAPI(conversationId)}`, {
                     method: 'DELETE',
                     body: JSON.stringify({token: tokenIsValid.token}),
                     headers: {

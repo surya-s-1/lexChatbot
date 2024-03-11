@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { verifyJwt } from "../utilities/verifytoken";
 
-const apiBaseUrl = `http://localhost:8000`
-
 export default function Login() {
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
@@ -14,7 +12,7 @@ export default function Login() {
         e.preventDefault()
 
         try {
-            const response = await fetch(`${apiBaseUrl}/login`, {
+            const response = await fetch(`${process.env.REACT_APP_LOGIN_URL}`, {
                 method: 'POST',
                 body: JSON.stringify({email, password}),
                 headers: { 'Content-Type' : 'application/json' }
