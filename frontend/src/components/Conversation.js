@@ -145,7 +145,7 @@ export default function Conversation() {
         <div className="d-grid gap-0 p-0">
             {messages?.map(message => (
               <div className={"p-1 m-0"} key={message._id}>
-                <MessageWrapper content={message.content} sender={message.sender} timestamp={message.timestamp} />
+                <MessageWrapper content={message.content} sender={message.sender} timestamp={message.timestamp} closed={closed} />
               </div>
             ))}
             {loading? (<LoadingWrapper />) : null}
