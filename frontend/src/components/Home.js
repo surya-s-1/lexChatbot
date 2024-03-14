@@ -101,8 +101,8 @@ export default function Home() {
 
     return (
         <div className="container" style={{ width: '40%' }}>
-            <nav class="navbar sticky-top navbar-light bg-light px-2 py-1" style={{zIndex: 1, height: '7%', boxShadow: "0 0 2px grey"}}>
-                <h1 class="navbar-brand m-0">
+            <nav className="navbar sticky-top navbar-light bg-light px-2 py-1" style={{zIndex: 1, height: '7%', boxShadow: "0 0 2px grey"}}>
+                <h1 className="navbar-brand m-0">
                     Conversations
                 </h1>
                 <button className="btn btn-primary m-0" onClick={createConversation}>
