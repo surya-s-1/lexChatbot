@@ -37,6 +37,8 @@ export default function Conversation() {
           setClosed(false)
         }
 
+        setLoading(false)
+
         const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
 
         let cumulativeCharacters = 0;
@@ -67,7 +69,7 @@ export default function Conversation() {
   useEffect(()=> {
     fetchMessages()
 
-    setInput("Hi")
+    setLoading(true)
   },[fetchMessages])
 
   const handleSendUserMessage = async (e) => {

@@ -19,8 +19,21 @@ export class ConversationService {
         
         const sessionNow = sessionId()
 
-        const newConversation = this.conversationModel.create({sessionId: sessionNow, messages: []})
-        return newConversation
+        const newConversation = await this.conversationModel.create({sessionId: sessionNow, messages: []})
+
+        const botResponse = await Bot(newConversation.sessionId, 'Hi')
+
+        botResponse.messages?.map(message => {
+            const timestampBot = new Date(Date.now())
+            const sanitizedMsg = sanitizeMsgInput(message['content'])
+            const newMessageBot = { content: sanitizedMsg, sender: "chatbot", timestamp: timestampBot}
+
+            newConversation.messages.push(newMessageBot)
+        })
+
+        newConversation.state = botResponse.sessionState.dialogAction.type==="Close"?"Close":"InProgress"
+
+        return newConversation.save()
     }
 
     async addMessage(conversationId: string, content: string, sender: string): Promise<Conversation> {
