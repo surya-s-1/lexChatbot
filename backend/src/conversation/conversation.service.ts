@@ -31,7 +31,7 @@ export class ConversationService {
             newConversation.messages.push(newMessageBot)
         })
 
-        newConversation.state = botResponse.sessionState.dialogAction.type==="Close"?"Close":"InProgress"
+        newConversation.state = botResponse.sessionState.dialogAction.type
 
         return newConversation.save()
     }
@@ -62,7 +62,7 @@ export class ConversationService {
             conversation.messages.push(newMessageBot)
         })
 
-        conversation.state = botResponse.sessionState.dialogAction.type==="Close"?"Close":"InProgress"
+        conversation.state = botResponse.sessionState.dialogAction.type
 
         return conversation.save()
     }
