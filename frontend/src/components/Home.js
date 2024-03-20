@@ -159,6 +159,7 @@ export default function Home() {
                     <button 
                         className="btn btn-primary px-3 py-2 m-2 float-end"
                         onClick={()=>{
+                            setDeleteConversationId(null)
                             setDeleteModalOpen(false)
                         }}>
                         No
