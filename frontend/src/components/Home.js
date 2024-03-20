@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { TypeAnimation } from 'react-type-animation'
 import Modal from "react-modal";
 import { MdDelete } from "react-icons/md";
+import { TailSpin } from "react-loading-icons"
 import { verifyJwt } from "../utilities/verifytoken";
 import { getAllConversationsAPI, createConversationAPI, deleteConversationAPI } from "../utilities/api";
 
@@ -139,7 +139,7 @@ export default function Home() {
                 isOpen={redirectModalOpen}
                 style={modalStyle}
             >
-                <h3><TypeAnimation preRenderFirstString={true} sequence={['Redirecting...',500,'Redirecting']} speed={65} repeat={Infinity} cursor={false} /></h3>
+                <h3>Redirecting <TailSpin stroke="#000000" /></h3>
             </Modal>
             <Modal
                 isOpen={deleteModalOpen}
@@ -149,8 +149,8 @@ export default function Home() {
                 <div className="d-flex flex-row-reverse justify-content-around">
                     <button 
                         className="btn btn-danger px-3 py-2 m-2 float-start"
-                        onClick={()=>{
-                            deleteConversation(deleteConversationId)
+                        onClick={async ()=>{
+                            await deleteConversation(deleteConversationId)
                             setDeleteConversationId(null)
                             setDeleteModalOpen(false)
                         }}>
