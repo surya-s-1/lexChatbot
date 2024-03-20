@@ -1,11 +1,27 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { TypeAnimation } from 'react-type-animation'
+import Modal from "react-modal";
 import { MdDelete } from "react-icons/md";
 import { verifyJwt } from "../utilities/verifytoken";
 import { getAllConversationsAPI, createConversationAPI, deleteConversationAPI } from "../utilities/api";
 
+const modalStyle = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)'
+    }
+  }  
+
 export default function Home() {
     const [conversations, setConversations] = useState([])
+    const [redirectModalOpen, setRedirectModalOpen] = useState(false)
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+    const [deleteConversationId, setDeleteConversationId] = useState(null)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -60,6 +76,7 @@ export default function Home() {
                 const data = await response.json()
                 
                 setConversations([...conversations, data?.conversation])
+                setRedirectModalOpen(false)
                 navigate(`/conversations/${data.conversation._id}`)
             } else {
                 navigate('/login')
@@ -105,18 +122,66 @@ export default function Home() {
                 <h1 className="navbar-brand m-0">
                     Conversations
                 </h1>
-                <button className="btn btn-primary m-0" onClick={createConversation}>
+                <button 
+                    className="btn btn-primary m-0" 
+                    onClick={()=>{
+                        createConversation()
+                        setRedirectModalOpen(true)
+                    }}
+                >
                     Start Conversation
                 </button>
                 <button className="btn btn-danger m-0" onClick={logout}>
                     Logout
                 </button>
             </nav>
+            <Modal
+                isOpen={redirectModalOpen}
+                style={modalStyle}
+            >
+                <h3><TypeAnimation preRenderFirstString={true} sequence={['Redirecting...',500,'Redirecting']} speed={65} repeat={Infinity} cursor={false} /></h3>
+            </Modal>
+            <Modal
+                isOpen={deleteModalOpen}
+                style={modalStyle}
+            >
+                <div><h4>Confirm the deletion?</h4></div>
+                <div className="d-flex flex-row-reverse justify-content-around">
+                    <button 
+                        className="btn btn-danger px-3 py-2 m-2 float-start"
+                        onClick={()=>{
+                            deleteConversation(deleteConversationId)
+                            setDeleteConversationId(null)
+                            setDeleteModalOpen(false)
+                        }}>
+                        Yes
+                    </button>
+                    <button 
+                        className="btn btn-primary px-3 py-2 m-2 float-end"
+                        onClick={()=>{
+                            setDeleteModalOpen(false)
+                        }}>
+                        No
+                    </button>
+                </div>
+            </Modal>
             <ul className="list-group my-2">
                 {conversations?.map((conversation) => (
                     <li className="list-group-item list-group-item-action" key={conversation._id}>
-                        <Link className="list-group-item-action" to={`/conversations/${conversation._id}`} style={{textDecoration: 'none'}}>Conversation {conversation._id}</Link>
-                        <button className="btn btn-danger px-1 py-0 m-0 float-end" onClick={()=>{deleteConversation(conversation._id)}}>
+                        <Link 
+                            className="list-group-item-action" 
+                            to={`/conversations/${conversation._id}`} 
+                            style={{textDecoration: 'none'
+                        }}>
+                            Conversation {conversation._id}
+                        </Link>
+
+                        <button 
+                            className="btn btn-danger px-1 py-0 m-0 float-end" 
+                            onClick={()=>{
+                                setDeleteConversationId(conversation._id)
+                                setDeleteModalOpen(true)
+                        }}>
                             <MdDelete />
                         </button>
                     </li>
