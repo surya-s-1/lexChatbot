@@ -33,32 +33,38 @@ export default function Conversation() {
 
         const data = await response.json()
 
-        if (data.conversation.state === "Close") {
-          setClosed(true)
-        } else {
-          setClosed(false)
-        }
-
         setLoading(false)
 
-        const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
+        if (data.tokenValid && data.conversation) {
+          if (data.conversation.state === "Close") {
+            setClosed(true)
+          } else {
+            setClosed(false)
+          }
 
-        let cumulativeCharacters = 0;
-
-        for (let i = 0; i < newMessages.length; i++) {
-
-          setTimeout(()=>{
-              setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
-            }, data.conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 75)
-
-          cumulativeCharacters += newMessages[i].content.length
-
-          messageIds.current.add(newMessages[i]._id)
+          const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
+  
+          let cumulativeCharacters = 0;
+  
+          for (let i = 0; i < newMessages.length; i++) {
+  
+            setTimeout(()=>{
+                setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
+              }, data.conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 75)
+  
+            cumulativeCharacters += newMessages[i].content.length
+  
+            messageIds.current.add(newMessages[i]._id)
+          }
+  
+          scrollDown.current.scrollIntoView(true, {
+            behavior: 'smooth'
+          })
+        } else if (data.tokenValid && data.conversation===null) {
+          setErrMsg("Conversation not available")
+        } else if (!data.tokenValid) {
+          setErrMsg("Something wrong... Go to home page")
         }
-
-        scrollDown.current.scrollIntoView(true, {
-          behavior: 'smooth'
-        })
       } catch (err) {
         setErrMsg("Internal Error")
       }
@@ -96,7 +102,7 @@ export default function Conversation() {
         setInput("")
         setTimeout(() => {
           setLoading(true)
-        }, 500);
+        }, 500)
       } else {
         navigate('/login')
       }

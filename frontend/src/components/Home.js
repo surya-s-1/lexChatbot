@@ -61,8 +61,7 @@ export default function Home() {
             
                 setConversations([...conversations, data?.conversation])
                 setRedirectModalOpen(false)
-                navigate(`/conversations/${data.conversation._id}`)
-
+                window.open(`/conversations/${data.conversation._id}`,'_blank')
             } catch (err) {
                 setRedirectModalOpen(false)
                 setErrMsg("Internal Error")
@@ -142,6 +141,11 @@ export default function Home() {
             <DeleteModal isOpen={deleteModalOpen} yesFn={deleteFn} noFn={noDeleteFn} />
 
             <ul className="list-group my-2">
+                {conversations?.length===0?(
+                    <div className="d-flex justify-content-center">
+                        No conversations available
+                    </div>
+                ):null}
                 {conversations?.map((conversation) => (
                     <li className="list-group-item list-group-item-action" key={conversation._id}>
                         <Link 

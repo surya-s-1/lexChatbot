@@ -31,7 +31,7 @@ export const biggerFontSizeModal = {
     left: '50%',
     right: 'auto',
     bottom: 'auto',
-    border: 0,
+    border: '1px solid black',
     marginRight: '-50%',
     fontSize: '24px',
     transform: 'translate(-50%, -90%)'
