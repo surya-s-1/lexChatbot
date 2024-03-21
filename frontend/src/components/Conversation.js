@@ -2,9 +2,10 @@ import { useEffect, useState, useCallback, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { IoIosArrowBack } from "react-icons/io"
 import { BsFillSendFill } from "react-icons/bs"
-import MessageWrapper, {LoadingWrapper} from "./MessageWrapper"
+import MessageWrapper, { LoadingWrapper } from "./MessageWrapper"
 import { verifyJwt } from "../utilities/verifytoken"
 import { getAllMessagesAPI, sendUserMessageAPI, getBotMessagesAPI } from "../utilities/api"
+import { ErrorModal } from "./Modals"
 
 export default function Conversation() {
   const params =  useParams()
@@ -13,14 +14,15 @@ export default function Conversation() {
   const [loading, setLoading] = useState(false)
   const [input, setInput] = useState("")
   const [closed, setClosed] = useState(false)
+  const [errMsg, setErrMsg] = useState("")
   const scrollDown = useRef(null)
   const messageIds = useRef(new Set())
 
   const fetchMessages = useCallback(async () => {
-    try {      
-      const tokenIsValid = verifyJwt()
+    const tokenIsValid = verifyJwt()
 
-      if (tokenIsValid.isValid) {
+    if (tokenIsValid.isValid) {
+      try {
         const response = await fetch(`${getAllMessagesAPI(params.id)}`, {
           method: 'POST',
           body: JSON.stringify({token: tokenIsValid.token}),
@@ -28,7 +30,7 @@ export default function Conversation() {
             'Content-Type': 'application/json',
           }
         })
-
+  
         const data = await response.json()
     
         if (data.conversation.state === "Close") {
@@ -36,32 +38,32 @@ export default function Conversation() {
         } else {
           setClosed(false)
         }
-
+  
         setLoading(false)
-
+  
         const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
-
+  
         let cumulativeCharacters = 0;
-
+  
         for (let i = 0; i < newMessages.length; i++) {
           
           setTimeout(()=>{
               setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
             }, data.conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 75)
-
+  
           cumulativeCharacters += newMessages[i].content.length
-
+  
           messageIds.current.add(newMessages[i]._id)
         }
-
+  
         scrollDown.current.scrollIntoView(true, {
           behavior: 'smooth'
         })
-      } else {
-        navigate('/login')
+      } catch (err) {
+        setErrMsg("Internal Error")
       }
-    } catch (error) {
-      console.error('Error fetching messages:', error)
+    } else {
+      navigate('/login')
     }
 
   }, [params.id, navigate])
@@ -75,20 +77,19 @@ export default function Conversation() {
   const handleSendUserMessage = async (e) => {
     e.preventDefault()
     if (input.trim() !== "") {
-
       const tokenIsValid = verifyJwt()
 
       if (tokenIsValid.isValid) {
-        const response = await fetch(`${sendUserMessageAPI(params.id)}`, {
+        try {
+          await fetch(`${sendUserMessageAPI(params.id)}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({token: tokenIsValid.token, content: input, sender: "user"}),
+            body: JSON.stringify({token: tokenIsValid.token, content: input.trim(), sender: "user"}),
           })
-        
-        if (!response.ok) {
-          throw new Error(`Failed to send message: ${response.status}`);
+        } catch (err) {
+          setErrMsg("Internal Error")
         }
 
         fetchMessages()
@@ -109,16 +110,16 @@ export default function Conversation() {
       const tokenIsValid = verifyJwt()
 
       if (tokenIsValid.isValid) {
-        const response = await fetch(`${getBotMessagesAPI(params.id)}`, {
+        try {
+          await fetch(`${getBotMessagesAPI(params.id)}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({token: tokenIsValid.token, content: input}),
+            body: JSON.stringify({token: tokenIsValid.token, content: input.trim()}),
           })
-        
-        if (!response.ok) {
-          throw new Error(`Failed to send message: ${response.status}`);
+        } catch (err) {
+          setErrMsg("Internal Error")
         }
 
         fetchMessages()
@@ -132,16 +133,18 @@ export default function Conversation() {
 
   return (
     <div className="container" style={{width: '40%'}}>
-      <nav class="row navbar-expand-sm navbar-light bg-primary position-fixed top-0"
+      <nav className="row navbar-expand-sm navbar-light bg-primary position-fixed top-0"
        style={{zIndex: 1, width: '40%', height: '7%', boxShadow: "0 1px 1px grey"}}>
-        <div class="collapse navbar-collapse">
-          <div class="navbar-nav d-flex">
-            <button class="nav-link px-2" style={{color: 'white'}} onClick={()=>{navigate('/home')}}>
+        <div className="collapse navbar-collapse">
+          <div className="navbar-nav d-flex">
+            <button className="nav-link px-2" style={{color: 'white'}} onClick={()=>{navigate('/home')}}>
               <IoIosArrowBack />
             </button>
           </div>
         </div>
       </nav>
+
+      <ErrorModal isOpen={errMsg !== ""} errMsg={errMsg} />
       
       <div className="row" style={{zIndex:-1, marginTop:'10%', marginBottom:'25%',overflow:'hidden'}}>
         <div className="d-grid gap-0 p-0">
@@ -167,9 +170,9 @@ export default function Conversation() {
           <input 
             className="form-control border-0" 
             placeholder="Type here..." 
+            id = "input"
             value={input}
             onChange={e => setInput(e.target.value)}
-            disabled={closed}
           />
           <button 
             type="submit" 
@@ -178,12 +181,11 @@ export default function Conversation() {
               handleSendUserMessage(e)
               handleGetBotResponse(e)
             }}
-            disabled={closed}
           >
             <BsFillSendFill />
           </button>
         </form>
       )}
     </div>
-  );
+  )
 }

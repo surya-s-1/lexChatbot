@@ -1,35 +1,25 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Modal from "react-modal";
-import { MdDelete } from "react-icons/md";
-import { TailSpin } from "react-loading-icons"
-import { verifyJwt } from "../utilities/verifytoken";
-import { getAllConversationsAPI, createConversationAPI, deleteConversationAPI } from "../utilities/api";
-
-const modalStyle = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)'
-    }
-  }  
+import { useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { MdDelete } from "react-icons/md"
+import { verifyJwt } from "../utilities/verifytoken"
+import { getAllConversationsAPI, createConversationAPI, deleteConversationAPI } from "../utilities/api"
+import { DeleteModal, ErrorModal, FetchingModal, RedirectingModal } from "./Modals"
 
 export default function Home() {
     const [conversations, setConversations] = useState([])
     const [redirectModalOpen, setRedirectModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+    const [fetching, setFetching] = useState(true)
+    const [errMsg, setErrMsg] = useState("")
     const [deleteConversationId, setDeleteConversationId] = useState(null)
     const navigate = useNavigate()
 
     useEffect(() => {
         const fetchConversations = async () => {
-            try {
-                const tokenIsValid = verifyJwt()
+            const tokenIsValid = verifyJwt()
 
-                if (tokenIsValid.isValid) {
+            if (tokenIsValid.isValid) {
+                try {
                     const response = await fetch(`${getAllConversationsAPI()}`, {
                         method: 'POST',
                         body: JSON.stringify({token: tokenIsValid.token}),
@@ -37,19 +27,17 @@ export default function Home() {
                             'Content-Type': 'application/json'
                         }
                     })
-                    
-                    if (!response.ok) {
-                        throw new Error(`Error fetching conversations: ${response.status}`);
-                    }
     
                     const data = await response.json()
                     
                     setConversations(data.conversation)
-                } else {
-                    navigate('/login')
+                    setFetching(false)
+                } catch (err) {
+                    setErrMsg("Internal Error")
+                    setFetching(false)
                 }
-            } catch (error) {
-                console.error('Error fetching conversations: ', error)
+            } else {
+                navigate('/login')
             }
         };
 
@@ -57,10 +45,10 @@ export default function Home() {
     }, [conversations, navigate])
 
     const createConversation = async () => {
-        try {
-            const tokenIsValid = verifyJwt()
+        const tokenIsValid = verifyJwt()
 
-            if (tokenIsValid.isValid) {
+        if (tokenIsValid.isValid) {
+            try {
                 const response = await fetch(`${createConversationAPI()}`, {
                     method: 'POST',
                     body: JSON.stringify({token: tokenIsValid.token}),
@@ -68,29 +56,27 @@ export default function Home() {
                         'Content-Type': 'application/json'
                     }
                 })
-    
-                if (!response.ok) {
-                    throw new Error(`Error creating conversation: ${response.status}`);
-                }
-    
+
                 const data = await response.json()
-                
+            
                 setConversations([...conversations, data?.conversation])
                 setRedirectModalOpen(false)
                 navigate(`/conversations/${data.conversation._id}`)
-            } else {
-                navigate('/login')
+
+            } catch (err) {
+                setRedirectModalOpen(false)
+                setErrMsg("Internal Error")
             }
-        } catch (error) {
-            console.error('Error creating conversation: ', error)
+        } else {
+            navigate('/login')
         }
     }
 
     const deleteConversation = async (conversationId) => {
-        try {
-            const tokenIsValid = verifyJwt()
+        const tokenIsValid = verifyJwt()
 
-            if (tokenIsValid.isValid) {
+        if (tokenIsValid.isValid) {
+            try {
                 await fetch(`${deleteConversationAPI(conversationId)}`, {
                     method: 'DELETE',
                     body: JSON.stringify({token: tokenIsValid.token}),
@@ -98,11 +84,11 @@ export default function Home() {
                         'Content-Type': 'application/json'
                     }
                 })
-            } else {
-                navigate('/login')
+            } catch (err) {
+                setErrMsg("Internal Error")
             }
-        } catch (err) {
-            console.log('Error deleting converstaion:', err)
+        } else {
+            navigate('/login')
         }
     }
 
@@ -112,8 +98,18 @@ export default function Home() {
 
             navigate('/login')
         } catch (error) {
-            console.log('Error logging out: ', error)
+            setErrMsg("Internal Error")
         }
+    }
+
+    const deleteFn = async () => {
+        await deleteConversation(deleteConversationId)
+        setDeleteConversationId(null)
+        setDeleteModalOpen(false)
+    }
+
+    const noDeleteFn = () => {
+        setDeleteModalOpen(false)
     }
 
     return (
@@ -135,36 +131,15 @@ export default function Home() {
                     Logout
                 </button>
             </nav>
-            <Modal
-                isOpen={redirectModalOpen}
-                style={modalStyle}
-            >
-                <h3>Redirecting <TailSpin stroke="#000000" /></h3>
-            </Modal>
-            <Modal
-                isOpen={deleteModalOpen}
-                style={modalStyle}
-            >
-                <div><h4>Confirm the deletion?</h4></div>
-                <div className="d-flex flex-row-reverse justify-content-around">
-                    <button 
-                        className="btn btn-danger px-3 py-2 m-2 float-start"
-                        onClick={async ()=>{
-                            await deleteConversation(deleteConversationId)
-                            setDeleteConversationId(null)
-                            setDeleteModalOpen(false)
-                        }}>
-                        Yes
-                    </button>
-                    <button 
-                        className="btn btn-primary px-3 py-2 m-2 float-end"
-                        onClick={()=>{
-                            setDeleteModalOpen(false)
-                        }}>
-                        No
-                    </button>
-                </div>
-            </Modal>
+            
+            <ErrorModal isOpen={errMsg!==""} errMsg={errMsg} />
+
+            <FetchingModal isOpen={fetching} msg={'Fetching conversations'} />
+
+            <RedirectingModal isOpen={redirectModalOpen} />
+
+            <DeleteModal isOpen={deleteModalOpen} yesFn={deleteFn} noFn={noDeleteFn} />
+
             <ul className="list-group my-2">
                 {conversations?.map((conversation) => (
                     <li className="list-group-item list-group-item-action" key={conversation._id}>
