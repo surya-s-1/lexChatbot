@@ -109,6 +109,7 @@ export default function Home() {
     }
 
     const noDeleteFn = () => {
+        setDeleteConversationId(null)
         setDeleteModalOpen(false)
     }
 
