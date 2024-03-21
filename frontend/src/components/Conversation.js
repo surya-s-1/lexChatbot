@@ -30,32 +30,32 @@ export default function Conversation() {
             'Content-Type': 'application/json',
           }
         })
-  
+
         const data = await response.json()
-    
+
         if (data.conversation.state === "Close") {
           setClosed(true)
         } else {
           setClosed(false)
         }
-  
+
         setLoading(false)
-  
+
         const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
-  
+
         let cumulativeCharacters = 0;
-  
+
         for (let i = 0; i < newMessages.length; i++) {
-          
+
           setTimeout(()=>{
               setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
             }, data.conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 75)
-  
+
           cumulativeCharacters += newMessages[i].content.length
-  
+
           messageIds.current.add(newMessages[i]._id)
         }
-  
+
         scrollDown.current.scrollIntoView(true, {
           behavior: 'smooth'
         })
@@ -145,7 +145,7 @@ export default function Conversation() {
       </nav>
 
       <ErrorModal isOpen={errMsg !== ""} errMsg={errMsg} />
-      
+
       <div className="row" style={{zIndex:-1, marginTop:'10%', marginBottom:'25%',overflow:'hidden'}}>
         <div className="d-grid gap-0 p-0">
             {messages?.map(message => (
@@ -169,9 +169,8 @@ export default function Conversation() {
         <form className="d-flex flex-row position-fixed bottom-0 bg-white p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
           <input 
             className="form-control border-0" 
-            placeholder="Type here..." 
-            id = "input"
-            value={input}
+            placeholder="Type here..."
+            value={loading?"":input}
             onChange={e => setInput(e.target.value)}
           />
           <button 
