@@ -1,11 +1,10 @@
 import { useEffect, useState, useCallback, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { IoIosArrowBack } from "react-icons/io"
-import { BsFillSendFill } from "react-icons/bs"
 import MessageWrapper, { LoadingWrapper } from "./MessageWrapper"
 import { verifyJwt } from "../utilities/verifytoken"
 import { getAllMessagesAPI, sendUserMessageAPI, getBotMessagesAPI } from "../utilities/api"
 import { ErrorModal } from "./Modals"
+import { InputBar, NavBar } from "./Components"
 
 export default function Conversation() {
   const params =  useParams()
@@ -139,16 +138,8 @@ export default function Conversation() {
 
   return (
     <div className="container" style={{width: '40%'}}>
-      <nav className="row navbar-expand-sm navbar-light bg-primary position-fixed top-0"
-       style={{zIndex: 1, width: '40%', height: '7%', boxShadow: "0 1px 1px grey"}}>
-        <div className="collapse navbar-collapse">
-          <div className="navbar-nav d-flex">
-            <button className="nav-link px-2" style={{color: 'white'}} onClick={()=>{navigate('/home')}}>
-              <IoIosArrowBack />
-            </button>
-          </div>
-        </div>
-      </nav>
+
+      <NavBar backFn={()=>{navigate('/home')}} />
 
       <ErrorModal isOpen={errMsg !== ""} errMsg={errMsg} />
 
@@ -161,6 +152,7 @@ export default function Conversation() {
             ))}
             {loading? (<LoadingWrapper />) : null}
         </div>
+        
         <div className="font-weight-light">
             <p style={{color: 'red'}} ref={scrollDown}>
               {closed?"This conversation is closed":null}
@@ -172,24 +164,10 @@ export default function Conversation() {
       </div>
 
       {closed?null:(
-        <form className="d-flex flex-row position-fixed bottom-0 bg-white p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
-          <input 
-            className="form-control border-0" 
-            placeholder="Type here..."
-            value={loading?"":input}
-            onChange={e => setInput(e.target.value)}
-          />
-          <button 
-            type="submit" 
-            className="btn btn-secondary border-0 m-1" 
-            onClick={e => {
-              handleSendUserMessage(e)
-              handleGetBotResponse(e)
-            }}
-          >
-            <BsFillSendFill />
-          </button>
-        </form>
+        <InputBar input={input} loading={loading} onChange={value => setInput(value)} onClick={e => {
+          handleSendUserMessage(e)
+          handleGetBotResponse(e)
+          }} />
       )}
     </div>
   )
