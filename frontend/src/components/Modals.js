@@ -1,5 +1,6 @@
 import Modal from "react-modal"
 import { IoReload } from "react-icons/io5"
+import { FaStop } from "react-icons/fa"
 import { errorModal, defaultModal, biggerFontSizeModal } from '../styles/modal.js'
 import { TypeAnimation } from "react-type-animation"
 import { TailSpin } from "react-loading-icons"
@@ -64,6 +65,26 @@ export const DeleteModal = ({isOpen, yesFn, noFn}) => {
                     onClick={noFn}>
                     No
                 </button>
+            </div>
+        </Modal>
+    )
+}
+
+export const ListeningModal = ({isOpen, stopFn}) => {
+    return(
+        <Modal
+            isOpen={isOpen}
+            style={biggerFontSizeModal}
+        >
+            <div className="d-flex flex-column">
+                <div className="align-self-center">
+                    Listening...
+                </div>
+                <div className="align-self-center">
+                    <button className="btn btn-secondary border-0 m-1" onClick={stopFn}>
+                        <FaStop />
+                    </button>
+                </div>
             </div>
         </Modal>
     )
