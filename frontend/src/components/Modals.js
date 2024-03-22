@@ -71,6 +71,13 @@ export const DeleteModal = ({isOpen, yesFn, noFn}) => {
 }
 
 export const ListeningModal = ({isOpen, stopFn}) => {
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'S' && e.shiftKey) {
+            stopFn()
+        }
+    })
+
     return(
         <Modal
             isOpen={isOpen}

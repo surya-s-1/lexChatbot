@@ -29,14 +29,22 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
     } = useSpeechRecognition()
     
     const startFn = () => {
-        SpeechRecognition.startListening({continuous: true})
         resetTranscript()
+        SpeechRecognition.startListening({continuous: true})
     }
 
     const stopFn = () => {
         SpeechRecognition.stopListening()
-        onChange(transcript)
+        if (transcript) {
+            onChange(transcript)
+        }
     }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'M' && e.shiftKey) {
+            startFn()
+        }
+    })
     
     return(
         <form className="d-flex flex-row position-fixed bottom-0 bg-white p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
@@ -49,22 +57,22 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
 
             <ListeningModal isOpen={listening} stopFn={()=>{stopFn()}} />
 
-            {(browserSupportsSpeechRecognition && browserSupportsContinuousListening) ? (
-                <div className="row mx-0">
-                    {listening ? null : 
-                    <button className="btn btn-secondary border-0 mx-0 my-1" onClick={startFn}>
-                        <FaMicrophone />
-                    </button>}
-                </div>
-            ) : null}
-
             <button 
-                type="submit" 
+                type="submit"
                 className="btn btn-secondary border-0 m-1" 
                 onClick={onClick}
             >
                 <BsFillSendFill />
             </button>
+
+            {(browserSupportsSpeechRecognition && browserSupportsContinuousListening) ? (
+                <div className="row mx-1">
+                    {listening ? null : 
+                    <button type="input" className="btn btn-link border-0 mx-0 my-1" onClick={startFn}>
+                        <FaMicrophone />
+                    </button>}
+                </div>
+            ) : null}
         </form>
     )
 }
