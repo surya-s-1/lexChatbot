@@ -67,14 +67,14 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
                     className="btn btn-link border-0 m-0" 
                     onClick={onClick}
                 >
-                    <BsFillSendFill />
+                    <span title="Send (Enter)"><BsFillSendFill /></span>
                 </button>
 
                 {(browserSupportsSpeechRecognition && browserSupportsContinuousListening) ? (
                     <div className="row">
                         {listening ? null : 
                         <button type="input" className="btn btn-link border-0 mx-0 my-1" onClick={startFn}>
-                            <FaMicrophone />
+                            <span title="Turn on Mic (Shift + M)"><FaMicrophone /></span>
                         </button>}
                     </div>
                 ) : null}
