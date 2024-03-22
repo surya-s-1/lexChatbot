@@ -38,6 +38,7 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
         if (transcript) {
             onChange(transcript)
         }
+        resetTranscript()
     }
 
     document.addEventListener('keydown', e => {
@@ -48,6 +49,15 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
     
     return(
         <form className="d-flex flex-row position-fixed bottom-0 bg-white p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
+            {(browserSupportsSpeechRecognition && browserSupportsContinuousListening) ? (
+                <div className="row mx-1 my-0">
+                    {listening ? null : 
+                    <button type="input" className="btn btn-link border-0 mx-0 my-1" onClick={startFn}>
+                        <FaMicrophone />
+                    </button>}
+                </div>
+            ) : null}
+
             <input 
                 className="form-control border-0" 
                 placeholder="Type here..."
@@ -59,20 +69,11 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
 
             <button 
                 type="submit"
-                className="btn btn-secondary border-0 m-1" 
+                className="btn btn-link border-0 m-1" 
                 onClick={onClick}
             >
                 <BsFillSendFill />
             </button>
-
-            {(browserSupportsSpeechRecognition && browserSupportsContinuousListening) ? (
-                <div className="row mx-1">
-                    {listening ? null : 
-                    <button type="input" className="btn btn-link border-0 mx-0 my-1" onClick={startFn}>
-                        <FaMicrophone />
-                    </button>}
-                </div>
-            ) : null}
         </form>
     )
 }
