@@ -39,6 +39,7 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
             onChange(transcript)
         }
         resetTranscript()
+        document.getElementById("input").focus()
     }
 
     document.addEventListener('keydown', e => {
@@ -51,6 +52,7 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
         <form className="d-flex flex-row position-fixed bottom-0 bg-white p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
 
             <input 
+                id="input"
                 className="form-control border-0" 
                 placeholder="Type here..."
                 value={loading?"":input}

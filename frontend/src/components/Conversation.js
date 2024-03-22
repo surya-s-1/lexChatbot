@@ -59,6 +59,8 @@ export default function Conversation() {
           scrollDown.current.scrollIntoView(true, {
             behavior: 'smooth'
           })
+          
+          document.getElementById("input").focus()
         } else if (data.tokenValid && data.conversation===null) {
           setErrMsg("Conversation not available")
         } else if (!data.tokenValid) {
