@@ -49,14 +49,6 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
     
     return(
         <form className="d-flex flex-row position-fixed bottom-0 bg-white p-0 m-0 border rounded" style={{width: '40%', height: '8%'}}>
-            {(browserSupportsSpeechRecognition && browserSupportsContinuousListening) ? (
-                <div className="row mx-1 my-0">
-                    {listening ? null : 
-                    <button type="input" className="btn btn-link border-0 mx-0 my-1" onClick={startFn}>
-                        <FaMicrophone />
-                    </button>}
-                </div>
-            ) : null}
 
             <input 
                 className="form-control border-0" 
@@ -67,13 +59,25 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
 
             <ListeningModal isOpen={listening} stopFn={()=>{stopFn()}} />
 
-            <button 
-                type="submit"
-                className="btn btn-link border-0 m-1" 
-                onClick={onClick}
-            >
-                <BsFillSendFill />
-            </button>
+            <div className="d-flex flex-row-reverse">
+                <button 
+                    type="submit"
+                    className="btn btn-link border-0 m-0" 
+                    onClick={onClick}
+                >
+                    <BsFillSendFill />
+                </button>
+
+                {(browserSupportsSpeechRecognition && browserSupportsContinuousListening) ? (
+                    <div className="row">
+                        {listening ? null : 
+                        <button type="input" className="btn btn-link border-0 mx-0 my-1" onClick={startFn}>
+                            <FaMicrophone />
+                        </button>}
+                    </div>
+                ) : null}
+            </div>
+
         </form>
     )
 }
