@@ -63,18 +63,19 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
 
             <div className="d-flex flex-row-reverse">
                 <button 
+                    title="Send (Enter)"
                     type="submit"
                     className="btn btn-link border-0 m-0" 
                     onClick={onClick}
                 >
-                    <span title="Send (Enter)"><BsFillSendFill /></span>
+                    <BsFillSendFill />
                 </button>
 
                 {(browserSupportsSpeechRecognition && browserSupportsContinuousListening) ? (
                     <div className="row">
                         {listening ? null : 
-                        <button type="input" className="btn btn-link border-0 mx-0 my-1" onClick={startFn}>
-                            <span title="Turn on Mic (Shift + M)"><FaMicrophone /></span>
+                        <button title="Turn on Mic (Shift + M)" className="btn btn-link border-0 mx-0 my-1" onClick={startFn}>
+                            <FaMicrophone />
                         </button>}
                     </div>
                 ) : null}

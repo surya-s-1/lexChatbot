@@ -88,11 +88,9 @@ export const ListeningModal = ({isOpen, stopFn}) => {
                     Listening...
                 </div>
                 <div className="align-self-center">
-                    <span title="Stop (Shift + S)">
-                        <button className="btn btn-secondary border-0 m-1" onClick={stopFn}>
-                            <FaStop />
-                        </button>
-                    </span>
+                    <button title="Stop (Shift + S)" className="btn btn-secondary border-0 m-1" onClick={stopFn}>
+                        <FaStop />
+                    </button>
                 </div>
             </div>
         </Modal>
