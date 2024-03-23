@@ -59,7 +59,7 @@ export const InputBar = ({input, loading, onChange, onClick}) => {
                 onChange={e => onChange(e.target.value)}
             />
 
-            <ListeningModal isOpen={listening} stopFn={()=>{stopFn()}} />
+            <ListeningModal isOpen={listening} transcript={transcript} resetFn={()=>{resetTranscript()}} stopFn={()=>{stopFn()}} />
 
             <div className="d-flex flex-row-reverse">
                 <button 

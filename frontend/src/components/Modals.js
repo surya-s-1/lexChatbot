@@ -1,9 +1,10 @@
 import Modal from "react-modal"
 import { IoReload } from "react-icons/io5"
-import { FaStop } from "react-icons/fa"
-import { errorModal, defaultModal, biggerFontSizeModal } from '../styles/modal.js'
+import { FaStop, FaUndo } from "react-icons/fa"
+import { errorModal, defaultModal, biggerFontSizeModal, listeningModal } from '../styles/modal.js'
 import { TypeAnimation } from "react-type-animation"
 import { TailSpin } from "react-loading-icons"
+import '../styles/style.css'
 
 export const ErrorModal = ({isOpen, errMsg}) => {
     return(
@@ -70,7 +71,7 @@ export const DeleteModal = ({isOpen, yesFn, noFn}) => {
     )
 }
 
-export const ListeningModal = ({isOpen, stopFn}) => {
+export const ListeningModal = ({isOpen, transcript, resetFn, stopFn}) => {
 
     document.addEventListener('keydown', e => {
         if (e.key === 'S' && e.shiftKey) {
@@ -78,18 +79,30 @@ export const ListeningModal = ({isOpen, stopFn}) => {
         }
     })
 
+    document.addEventListener('keydown', e => {
+        if (e.key === 'R' && e.shiftKey) {
+            resetFn()
+        }
+    })
+
     return(
         <Modal
             isOpen={isOpen}
-            style={biggerFontSizeModal}
+            style={listeningModal}
         >
-            <div className="d-flex flex-column">
+            <div className="d-flex flex-column" style={{overflow: 'hidden'}}>
                 <div className="align-self-center">
                     Listening...
+                </div>
+                <div className="scroll" style={{fontSize: '24px'}}>
+                    {transcript}
                 </div>
                 <div className="align-self-center">
                     <button title="Stop (Shift + S)" className="btn btn-secondary border-0 m-1" onClick={stopFn}>
                         <FaStop />
+                    </button>
+                    <button title="Reset (Shift + R)" className="btn btn-secondary border-0 m-1" onClick={stopFn}>
+                        <FaUndo />
                     </button>
                 </div>
             </div>

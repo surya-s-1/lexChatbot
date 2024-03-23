@@ -37,3 +37,18 @@ export const biggerFontSizeModal = {
     transform: 'translate(-50%, -90%)'
   }
 }
+
+export const listeningModal = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    maxWidth: '35%',
+    maxHeight: '35%',
+    border: '1px solid black',
+    marginRight: '-50%',
+    fontSize: '20px',
+    transform: 'translate(-50%, -90%)'
+  }
+}

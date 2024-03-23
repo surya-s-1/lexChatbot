@@ -141,7 +141,7 @@ export default function Home() {
             <DeleteModal isOpen={deleteModalOpen} yesFn={deleteFn} noFn={noDeleteFn} />
 
             <ul className="list-group my-2">
-                {conversations?.length===0?(
+                {((!fetching) && (conversations?.length===0))?(
                     <div className="d-flex justify-content-center">
                         No conversations available
                     </div>
