@@ -41,7 +41,7 @@ export default function Conversation() {
             setClosed(false)
           }
 
-          const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message._id))
+          const newMessages = data.conversation.messages.filter(message => !messageIds.current.has(message.messageId))
   
           let cumulativeCharacters = 0;
   
@@ -53,7 +53,7 @@ export default function Conversation() {
   
             cumulativeCharacters += newMessages[i].content.length
   
-            messageIds.current.add(newMessages[i]._id)
+            messageIds.current.add(newMessages[i].messageId)
           }
   
           scrollDown.current.scrollIntoView(true, {
@@ -148,7 +148,7 @@ export default function Conversation() {
       <div className="row" style={{zIndex:-1, marginTop:'10%', marginBottom:'25%',overflow:'hidden'}}>
         <div className="d-grid gap-0 p-0">
             {messages?.map(message => (
-              <div className={"p-1 m-0"} key={message._id}>
+              <div className={"p-1 m-0"} key={message.messageId}>
                 <MessageWrapper content={message.content} sender={message.sender} timestamp={message.timestamp} closed={closed} />
               </div>
             ))}

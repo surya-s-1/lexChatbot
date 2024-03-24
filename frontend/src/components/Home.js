@@ -61,7 +61,7 @@ export default function Home() {
             
                 setConversations([...conversations, data?.conversation])
                 setRedirectModalOpen(false)
-                window.open(`/conversations/${data.conversation._id}`,'_blank')
+                window.open(`/conversations/${data.conversation.sessionId}`,'_blank')
             } catch (err) {
                 setRedirectModalOpen(false)
                 setErrMsg("Internal Error")
@@ -147,19 +147,19 @@ export default function Home() {
                     </div>
                 ):null}
                 {conversations?.map((conversation) => (
-                    <li className="list-group-item list-group-item-action" key={conversation._id}>
+                    <li className="list-group-item list-group-item-action" key={conversation.sessionId}>
                         <Link 
                             className="list-group-item-action" 
-                            to={`/conversations/${conversation._id}`} 
+                            to={`/conversations/${conversation.sessionId}`} 
                             style={{textDecoration: 'none'
                         }}>
-                            Conversation {conversation._id}
+                            Conversation {conversation.sessionId}
                         </Link>
 
                         <button 
                             className="btn btn-danger px-1 py-0 m-0 float-end" 
                             onClick={()=>{
-                                setDeleteConversationId(conversation._id)
+                                setDeleteConversationId(conversation.sessionId)
                                 setDeleteModalOpen(true)
                         }}>
                             <MdDelete />
