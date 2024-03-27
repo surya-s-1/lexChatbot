@@ -16,6 +16,7 @@ export default function Conversation() {
   const [errMsg, setErrMsg] = useState("")
   const scrollDown = useRef(null)
   const messageIds = useRef(new Set())
+  const [initial, setInitial] = useState(true)
 
   const fetchMessages = useCallback(async () => {
     const tokenIsValid = verifyJwt()
@@ -45,15 +46,25 @@ export default function Conversation() {
   
           let cumulativeCharacters = 0;
   
-          for (let i = 0; i < newMessages.length; i++) {
+          if (initial) {
+            setMessages(prevMsgs => [...prevMsgs, ...newMessages])
+
+            for (let i = 0; i < newMessages.length; i++) {
+              messageIds.current.add(newMessages[i].messageId)
+            }
+
+            setInitial(false)
+          } else {
+            for (let i = 0; i < newMessages.length; i++) {
   
-            setTimeout(()=>{
-                setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
-              }, data.conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 75)
-  
-            cumulativeCharacters += newMessages[i].content.length
-  
-            messageIds.current.add(newMessages[i].messageId)
+              setTimeout(()=>{
+                  setMessages(prevMsgs => [...prevMsgs, newMessages[i]])
+                }, data.conversation.state === "Close" ? 0 : cumulativeCharacters * 2000 / 75)
+    
+              cumulativeCharacters += newMessages[i].content.length
+    
+              messageIds.current.add(newMessages[i].messageId)
+            }
           }
   
           scrollDown.current.scrollIntoView(true, {
@@ -73,7 +84,7 @@ export default function Conversation() {
       navigate('/login')
     }
 
-  }, [params.id, navigate])
+  }, [params.id, navigate, initial])
 
   useEffect(()=> {
     fetchMessages()
