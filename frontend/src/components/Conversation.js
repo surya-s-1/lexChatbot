@@ -71,7 +71,7 @@ export default function Conversation() {
             behavior: 'smooth'
           })
           
-          document.getElementById("input").focus()
+          document?.getElementById("input")?.focus()
         } else if (data.tokenValid && data.conversation===null) {
           setErrMsg("Conversation not available")
         } else if (!data.tokenValid) {
@@ -79,6 +79,7 @@ export default function Conversation() {
         }
       } catch (err) {
         setErrMsg("Internal Error")
+        console.log(err)
       }
     } else {
       navigate('/login')

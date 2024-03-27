@@ -101,7 +101,7 @@ export const ListeningModal = ({isOpen, transcript, resetFn, stopFn}) => {
                     <button title="Stop (Shift + S)" className="btn btn-secondary border-0 m-1" onClick={stopFn}>
                         <FaStop />
                     </button>
-                    <button title="Reset (Shift + R)" className="btn btn-secondary border-0 m-1" onClick={stopFn}>
+                    <button title="Reset (Shift + R)" className="btn btn-secondary border-0 m-1" onClick={resetFn}>
                         <FaUndo />
                     </button>
                 </div>
